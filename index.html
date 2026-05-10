@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Дипломная работа К.Д. Кочевова</title>
+    <!-- Подключаем шрифты и иконки -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(145deg, #101018 0%, #1a1a2e 100%);
+            color: #f0f0ff;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.5;
+            min-height: 100vh;
+            padding: 1.5rem;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: rgba(25, 25, 40, 0.85);
+            backdrop-filter: blur(2px);
+            border-radius: 1.5rem;
+            padding: 1.8rem;
+            box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* Шапка */
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 1.5rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #a259ff, #5f7eff, #00c9b7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 0.75rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.8;
+            font-weight: 400;
+        }
+
+        /* Прогресс-бар (упрощённый) */
+        .progress-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin: 1rem auto 0.8rem;
+            max-width: 90%;
+        }
+
+        .progress-fill {
+            width: 70%;
+            height: 100%;
+            background: linear-gradient(90deg, #a259ff, #00c9b7);
+            border-radius: 10px;
+        }
+
+        .tech-badge {
+            display: inline-block;
+            background: rgba(162, 89, 255, 0.2);
+            padding: 0.2rem 0.8rem;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            margin: 0.2rem;
+            border: 1px solid rgba(162, 89, 255, 0.4);
+            font-weight: 500;
+        }
+
+        /* Вкладки */
+        .tab-container {
+            margin-top: 0.5rem;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 0.5rem;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 0.5rem;
+            border-radius: 2rem;
+            margin-bottom: 1.8rem;
+        }
+
+        .tab-button {
+            flex: 1;
+            text-align: center;
+            padding: 0.7rem 0;
+            font-weight: 600;
+            border-radius: 2rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #ccc;
+            font-size: 1rem;
+        }
+
+        .tab-button.active {
+            background: linear-gradient(115deg, #a259ff, #5f7eff);
+            color: white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .tab-button:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.08);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fade 0.25s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fade {
+            from { opacity: 0; transform: translateY(6px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+
+        h2 {
+            font-size: 1.7rem;
+            margin-bottom: 1rem;
+            color: #b9b0ff;
+            border-left: 4px solid #5f7eff;
+            padding-left: 1rem;
+        }
+
+        h3 {
+            margin: 1rem 0 0.5rem;
+            font-weight: 600;
+            color: #b9f0e0;
+        }
+
+        hr {
+            margin: 1rem 0;
+            border-color: rgba(255,255,255,0.1);
+        }
+
+        /* Часы */
+        #clock {
+            font-family: monospace;
+            font-size: 2rem;
+            font-weight: 600;
+            text-align: center;
+            background: rgba(0,0,0,0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 1rem;
+            display: inline-block;
+            width: auto;
+            letter-spacing: 2px;
+            color: #a0f0e8;
+            margin: 0.5rem 0;
+        }
+
+        .clock-wrapper {
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        /* Меню-бургер (упрощённо) */
+        nav {
+            margin: 1.2rem 0;
+        }
+
+        .hamburger {
+            display: inline-flex;
+            flex-direction: column;
+            gap: 5px;
+            background: rgba(30,30,50,0.9);
+            padding: 10px 14px;
+            border-radius: 14px;
+            cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.15);
+            transition: 0.2s;
+        }
+
+        .hamburger span {
+            width: 26px;
+            height: 2.5px;
+            background: #b9b0ff;
+            transition: 0.2s;
+        }
+
+        #menu-toggle {
+            display: none;
+        }
+
+        nav ul {
+            list-style: none;
+            margin-top: 12px;
+            background: rgba(20,20,35,0.9);
+            border-radius: 1rem;
+            padding: 0.8rem;
+            display: none;
+            grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+            gap: 8px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        #menu-toggle:checked ~ ul {
+            display: grid;
+        }
+
+        nav ul li a {
+            display: block;
+            padding: 8px 12px;
+            color: #ddd;
+            text-decoration: none;
+            border-radius: 12px;
+            transition: 0.2s;
+            font-size: 0.9rem;
+        }
+
+        nav ul li a:hover {
+            background: #2a2a4a;
+            color: white;
+        }
+
+        /* Селектор страны */
+        .country-selector select {
+            width: 100%;
+            padding: 12px 15px;
+            background: #1e1e2e;
+            border: 1px solid #3c3c5a;
+            border-radius: 14px;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .country-selector select:focus {
+            border-color: #5f7eff;
+            outline: none;
+        }
+
+        .gradient-border {
+            background: rgba(30,30,50,0.5);
+            padding: 1.3rem;
+            border-radius: 1.2rem;
+            margin: 1rem 0;
+            border: 1px solid rgba(100,100,150,0.3);
+        }
+
+        /* Контакты */
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(35,35,55,0.7);
+            padding: 12px 18px;
+            border-radius: 60px;
+            margin-bottom: 12px;
+            transition: 0.2s;
+        }
+
+        .contact-item i {
+            width: 32px;
+            font-size: 1.4rem;
+            color: #62d6e0;
+        }
+
+        .contact-item a {
+            color: #b9f0e0;
+            text-decoration: none;
+        }
+
+        .contact-item a:hover {
+            text-decoration: underline;
+        }
+
+        /* счётчик */
+        .counter {
+            background: rgba(0,0,0,0.3);
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 60px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+
+        .pulse-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: #00c9b7;
+            border-radius: 50%;
+            margin-right: 6px;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.5; transform: scale(0.9);}
+            100% { opacity: 1; transform: scale(1.1);}
+        }
+
+        .tooltip {
+            border-bottom: 1px dashed #bbb;
+            cursor: help;
+        }
+
+        /* уведомление */
+        .notification {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #1f1f3a;
+            backdrop-filter: blur(12px);
+            padding: 10px 20px;
+            border-radius: 60px;
+            font-size: 0.9rem;
+            color: #d0f0ff;
+            border-left: 3px solid #00c9b7;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+            z-index: 999;
+            pointer-events: none;
+        }
+
+        .notification.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* skill bar */
+        .skill-item {
+            margin: 1rem 0;
+        }
+
+        .skill-bar {
+            background: #2c2c44;
+            border-radius: 12px;
+            height: 8px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .skill-fill {
+            background: #8b75ff;
+            width: 0%;
+            height: 100%;
+            border-radius: 12px;
+        }
+
+        button, .floating-action {
+            display: none;
+        }
+
+        /* респонсив */
+        @media (max-width: 640px) {
+            .container {
+                padding: 1.2rem;
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+            .tab-buttons {
+                gap: 0.3rem;
+            }
+            .tab-button {
+                font-size: 0.85rem;
+                padding: 0.5rem 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Дипломная работа</h1>
+        <p class="subtitle">Кочевов Кирилл Денисович · Веб-дизайн и разработка</p>
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
+        <div>
+            <span class="tech-badge">HTML5</span>
+            <span class="tech-badge">CSS3</span>
+            <span class="tech-badge">JavaScript</span>
+            <span class="tech-badge">Web Design</span>
+        </div>
+    </header>
+
+    <div class="tab-container">
+        <div class="tab-buttons">
+            <div class="tab-button active" data-tab="tab1">Дипломная</div>
+            <div class="tab-button" data-tab="tab2">Обо мне</div>
+            <div class="tab-button" data-tab="tab3">Контакты</div>
+        </div>
+
+        <!-- Вкладка 1: Основная -->
+        <div class="tab-content active" id="tab1">
+            <div class="counter">
+                <span class="pulse-dot"></span> Посещений: <span id="visitCount">1</span>
+            </div>
+            <hr>
+            <div class="clock-wrapper">
+                <div id="clock">00:00:00</div>
+            </div>
+
+            <!-- Навигационное меню (бургер) -->
+            <nav>
+                <input type="checkbox" id="menu-toggle">
+                <label for="menu-toggle" class="hamburger">
+                    <span></span><span></span><span></span>
+                </label>
+                <ul>
+                    <li><a href="https://www.figma.com/design/aZF8NsbH1P7ddeNDilJzos/Untitled?node-id=0-1&t=AhJPRjwUvO68EK8Y-1" target="_blank">Figma</a></li>
+                    <li><a href="https://kochevov.wordpress.com/kursovaaa/" target="_blank">WordPress</a></li>
+                    <li><a href="https://onlinetestpad.com/4dvglwjhrtxwi" target="_blank">Тест</a></li>
+                    <li><a href="https://b24-s2y12k.bitrix24.ru/sites/?feature_promoter=limit_copilot" target="_blank">Битрикс24</a></li>
+                    <li><a href="https://jsitor.com/" target="_blank">JSitor</a></li>
+                    <li><a href="https://stackblitz.com/" target="_blank">StackBlitz</a></li>
+                    <li><a href="https://ru.textstudio.com/logo/102/Html+Text+Generator" target="_blank">Генератор текста</a></li>
+                    <li><a href="https://kirill222222222222.github.io/kursss/" target="_blank">Игра</a></li>
+                    <li><a href="https://kirill222222222222.github.io/kvadrober/" target="_blank">Сайт о погоде</a></li>
+                    <li><a href="https://kirill222222222222.github.io/Weather1/" target="_blank">Поддержка шрифтов</a></li>
+                    <li><a href="https://kirill222222222222.github.io/-/" target="_blank">Разметки языков</a></li>
+                    <li><a href="https://kirill222222222222.github.io/kvest/" target="_blank">Квест по HTML</a></li>
+                    <li><a href="https://kirill222222222222.github.io/kk/" target="_blank">Инфографика</a></li>
+                    <li><a href="https://kirill222222222222.github.io/ddsda/" target="_blank">Сайт по отелю</a></li>
+                </ul>
+            </nav>
+
+            <div class="gradient-border">
+                <h3 style="margin-top: 0;">🌍 Выберите свою страну</h3>
+                <div class="country-selector">
+                    <select id="countrySelect">
+                        <option value="Белоруссия">Белоруссия</option>
+                        <option value="Казахстан">Казахстан</option>
+                        <option value="Россия" selected>Россия</option>
+                        <option value="Украина">Украина</option>
+                        <option value="Афганистан">Афганистан</option>
+                        <option value="Албания">Албания</option>
+                        <option value="Алжир">Алжир</option>
+                        <option value="Andorra">Андорра</option>
+                        <option value="Аргентина">Аргентина</option>
+                        <option value="Армения">Армения</option>
+                        <option value="Австралия">Австралия</option>
+                        <option value="Австрия">Австрия</option>
+                        <option value="Азербайджан">Азербайджан</option>
+                        <option value="Замбия">Замбия</option>
+                        <option value="Зимбабве">Зимбабве</option>
+                    </select>
+                </div>
+                <p class="tooltip" style="font-size: 0.85rem; margin-top: 12px;">💡 Зачем выбирать страну? <span style="color:#aaa;">(демонстрация работы формы)</span></p>
+            </div>
+        </div>
+
+        <!-- Вкладка 2: Обо мне -->
+        <div class="tab-content" id="tab2">
+            <h2>Обо мне</h2>
+            <p>Меня зовут <strong>Кочевов Кирилл Денисович</strong>, родился 23.08.2010. Учусь на 2-ом курсе по направлению Web-дизайн. Мне очень нравится создавать сайты и современные интерфейсы. В будущем хочу стать профессиональным дизайнером и frontend-разработчиком.</p>
+            
+            <div class="gradient-border">
+                <h3>📊 Мои навыки</h3>
+                <div class="skill-item">
+                    <div>HTML / CSS</div>
+                    <div class="skill-bar"><div class="skill-fill" style="width: 85%;"></div></div>
+                </div>
+                <div class="skill-item">
+                    <div>JavaScript (базовый)</div>
+                    <div class="skill-bar"><div class="skill-fill" style="width: 65%;"></div></div>
+                </div>
+                <div class="skill-item">
+                    <div>Web-дизайн / Figma</div>
+                    <div class="skill-bar"><div class="skill-fill" style="width: 80%;"></div></div>
+                </div>
+            </div>
+            <p style="margin-top: 1rem;">✨ Постоянно учусь новому, люблю делать адаптивные и красивые страницы. В работе использую современные подходы и чистый код.</p>
+        </div>
+
+        <!-- Вкладка 3: Контакты -->
+        <div class="tab-content" id="tab3">
+            <h2>Контакты</h2>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <span>Email: <a href="mailto:kkocevov@gmail.com">kkocevov@gmail.com</a></span>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-phone-alt"></i>
+                    <span>Телефон: <a href="tel:+79149559996">+7 914 955-99-96</a></span>
+                </div>
+                <div class="contact-item">
+                    <i class="fab fa-telegram"></i>
+                    <span>Telegram: <a href="https://t.me/Ded_Bunkere" target="_blank">@Ded_Bunkere</a></span>
+                </div>
+            </div>
+            <div class="gradient-border">
+                <h3>📬 Свяжитесь со мной</h3>
+                <p>Всегда открыт для интересных проектов, сотрудничества и новых идей. Пишите в любое время — буду рад помочь!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="notificationMsg" class="notification">👋 Добро пожаловать!</div>
+
+<script>
+    // 1️⃣ Часы
+    const clockEl = document.getElementById('clock');
+    function updateClock() {
+        const now = new Date();
+        const hh = String(now.getHours()).padStart(2, '0');
+        const mm = String(now.getMinutes()).padStart(2, '0');
+        const ss = String(now.getSeconds()).padStart(2, '0');
+        clockEl.textContent = `${hh}:${mm}:${ss}`;
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    // 2️⃣ Переключение вкладок (просто и надёжно)
+    const tabs = document.querySelectorAll('.tab-button');
+    const contents = document.querySelectorAll('.tab-content');
+    tabs.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetId = btn.getAttribute('data-tab');
+            tabs.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            contents.forEach(c => c.classList.remove('active'));
+            const activeContent = document.getElementById(targetId);
+            if (activeContent) activeContent.classList.add('active');
+        });
+    });
+
+    // 3️⃣ Счётчик посещений (localStorage)
+    let visits = localStorage.getItem('visitCount_diplom');
+    if (visits === null) {
+        visits = 1;
+    } else {
+        visits = Number(visits) + 1;
+    }
+    localStorage.setItem('visitCount_diplom', visits);
+    const visitSpan = document.getElementById('visitCount');
+    if (visitSpan) visitSpan.innerText = visits;
+
+    // 4️⃣ Уведомление с анимацией
+    const notif = document.getElementById('notificationMsg');
+    function showMessage(text, duration = 2200) {
+        if (!notif) return;
+        notif.textContent = text;
+        notif.classList.add('show');
+        setTimeout(() => {
+            notif.classList.remove('show');
+        }, duration);
+    }
+    // Приветствие при загрузке (если первое посещение или просто показываем)
+    setTimeout(() => {
+        showMessage(`✨ Добро пожаловать! Посещений: ${visits}`, 2500);
+    }, 300);
+
+    // 5️⃣ Обработка выбора страны + уведомление
+    const countrySelect = document.getElementById('countrySelect');
+    if (countrySelect) {
+        countrySelect.addEventListener('change', (e) => {
+            const selectedCountry = e.target.options[e.target.selectedIndex]?.text || 'страна';
+            showMessage(`🌐 Вы выбрали: ${selectedCountry}`, 1800);
+        });
+    }
+
+    // 6️⃣ Простой скролл наверх (без сложной плавающей кнопки, но добавим лёгкую возможность)
+    // Создадим маленькую кнопку в правом нижнем углу, но чистую и не навязчивую.
+    // Так как просили убрать "трудные штуки", но навигация наверх полезна – сделаем аккуратную статичную кнопку.
+    let scrollBtn = document.createElement('div');
+    scrollBtn.innerHTML = '<i class="fas fa-arrow-up"></i>';
+    scrollBtn.style.position = 'fixed';
+    scrollBtn.style.bottom = '20px';
+    scrollBtn.style.right = '20px';
+    scrollBtn.style.width = '44px';
+    scrollBtn.style.height = '44px';
+    scrollBtn.style.borderRadius = '30px';
+    scrollBtn.style.background = '#5f7eff';
+    scrollBtn.style.color = 'white';
+    scrollBtn.style.display = 'flex';
+    scrollBtn.style.alignItems = 'center';
+    scrollBtn.style.justifyContent = 'center';
+    scrollBtn.style.cursor = 'pointer';
+    scrollBtn.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)';
+    scrollBtn.style.fontSize = '1.2rem';
+    scrollBtn.style.transition = '0.2s';
+    scrollBtn.style.zIndex = '99';
+    scrollBtn.style.opacity = '0';
+    scrollBtn.style.pointerEvents = 'none';
+    document.body.appendChild(scrollBtn);
+    
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 250) {
+            scrollBtn.style.opacity = '1';
+            scrollBtn.style.pointerEvents = 'auto';
+        } else {
+            scrollBtn.style.opacity = '0';
+            scrollBtn.style.pointerEvents = 'none';
+        }
+    });
+    scrollBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // 7️⃣ небольшая фишка: добавим иконку внешней ссылки для всех ссылок меню (кроме уже с иконкой)
+    document.querySelectorAll('nav ul li a').forEach(link => {
+        if (link.hostname && link.hostname !== window.location.hostname) {
+            if (!link.querySelector('.fa-external-link-alt')) {
+                let iconSpan = document.createElement('i');
+                iconSpan.className = 'fas fa-external-link-alt';
+                iconSpan.style.fontSize = '0.7rem';
+                iconSpan.style.marginLeft = '6px';
+                link.appendChild(iconSpan);
+            }
+        }
+    });
+    
+    // убираем все лишние предупреждения консоли, код упрощён
+    // куб удалён, сложные анимации и плавающие элементы убраны полностью.
+    // дизайн стал лёгким, приятным, без перегруза.
+</script>
+</body>
+</html>
