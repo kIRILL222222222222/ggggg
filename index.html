@@ -2,551 +2,584 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Дипломная работа | Кирилл Кочевов</title>
-    <!-- Подключаем шрифты и иконки -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Zombie Defense - Защита базы с прокачкой</title>
     <style>
         * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background: linear-gradient(145deg, #0c0c1a 0%, #14142b 100%);
-            color: #f0f0ff;
-            font-family: 'Inter', sans-serif;
-            line-height: 1.5;
+            margin: 0;
             min-height: 100vh;
-            padding: 1.5rem;
-        }
-
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            background: rgba(22, 22, 40, 0.85);
-            backdrop-filter: blur(4px);
-            border-radius: 2rem;
-            padding: 1.8rem;
-            box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(120, 100, 220, 0.3);
-            transition: all 0.2s;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 2rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding-bottom: 1.5rem;
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            background: linear-gradient(135deg, #b18aff, #6f9eff, #3ce0cf);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin-bottom: 0.75rem;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-        }
-
-        .subtitle {
-            font-size: 1rem;
-            opacity: 0.85;
-        }
-
-        /* Прогресс-бар */
-        .progress-bar {
-            height: 5px;
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 10px;
-            margin: 1rem auto 0.8rem;
-            max-width: 80%;
-        }
-        .progress-fill {
-            width: 74%;
-            height: 100%;
-            background: linear-gradient(90deg, #a87cff, #3ce0cf);
-            border-radius: 10px;
-        }
-
-        .tech-badge {
-            display: inline-block;
-            background: rgba(140, 100, 255, 0.2);
-            padding: 0.25rem 1rem;
-            border-radius: 40px;
-            font-size: 0.75rem;
-            margin: 0.2rem;
-            border: 1px solid rgba(140, 100, 255, 0.5);
-            font-weight: 500;
-        }
-
-        /* Вкладки */
-        .tab-buttons {
-            display: flex;
-            gap: 0.6rem;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 0.5rem;
-            border-radius: 3rem;
-            margin-bottom: 2rem;
-        }
-        .tab-button {
-            flex: 1;
-            text-align: center;
-            padding: 0.7rem 0;
-            font-weight: 600;
-            border-radius: 3rem;
-            cursor: pointer;
-            transition: 0.2s;
-            color: #ccc;
-        }
-        .tab-button.active {
-            background: linear-gradient(115deg, #8866ff, #4f9eff);
-            color: white;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        }
-        .tab-button:hover:not(.active) {
-            background: rgba(255,255,255,0.06);
-            color: white;
-        }
-        .tab-content {
-            display: none;
-            animation: fade 0.25s ease;
-        }
-        .tab-content.active {
-            display: block;
-        }
-        @keyframes fade {
-            from { opacity: 0; transform: translateY(6px);}
-            to { opacity: 1; transform: translateY(0);}
-        }
-
-        h2 {
-            font-size: 1.7rem;
-            margin-bottom: 1rem;
-            color: #c7bdff;
-            border-left: 4px solid #7a5eff;
-            padding-left: 1rem;
-        }
-        h3 {
-            margin: 1rem 0 0.5rem;
-            font-weight: 600;
-            color: #96f0e4;
-        }
-
-        #clock {
-            font-family: 'Fira Mono', monospace;
-            font-size: 2rem;
-            font-weight: 600;
-            background: rgba(0,0,0,0.4);
-            padding: 0.4rem 1rem;
-            border-radius: 2rem;
-            display: inline-block;
-            letter-spacing: 3px;
-            color: #9df2ea;
-        }
-        .clock-wrapper { text-align: center; margin: 15px 0; }
-
-        /* Бургер меню */
-        nav { margin: 1.5rem 0; }
-        .hamburger {
-            display: inline-flex;
-            flex-direction: column;
-            gap: 5px;
-            background: #22223b;
-            padding: 10px 14px;
-            border-radius: 18px;
-            cursor: pointer;
-            border: 1px solid #4a4a72;
-        }
-        .hamburger span { width: 26px; height: 2.5px; background: #bfb5ff; }
-        #menu-toggle { display: none; }
-        nav ul {
-            list-style: none;
-            margin-top: 15px;
-            background: #191c2c;
-            border-radius: 1.5rem;
-            padding: 1rem;
-            display: none;
-            grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-            gap: 8px;
-        }
-        #menu-toggle:checked ~ ul { display: grid; }
-        nav ul li a {
-            display: block;
-            padding: 8px 12px;
-            color: #ddd;
-            text-decoration: none;
-            border-radius: 14px;
-            transition: 0.2s;
-        }
-        nav ul li a:hover { background: #2e2e55; color: white; }
-
-        .country-selector select {
-            width: 100%;
-            padding: 12px;
-            background: #1b1b2f;
-            border: 1px solid #5a5a8a;
-            border-radius: 30px;
-            color: white;
-            font-size: 1rem;
-            cursor: pointer;
-        }
-        .gradient-border {
-            background: rgba(35, 35, 60, 0.6);
-            padding: 1.3rem;
-            border-radius: 1.5rem;
-            margin: 1rem 0;
-            border: 1px solid rgba(110, 100, 200, 0.3);
-        }
-        .contact-item {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            background: #20223a;
-            padding: 10px 18px;
-            border-radius: 60px;
-            margin-bottom: 12px;
-        }
-        .contact-item i { width: 32px; font-size: 1.3rem; color: #5fdcce; }
-        .counter {
-            background: #01011466;
-            display: inline-block;
-            padding: 4px 18px;
-            border-radius: 30px;
-            font-size: 0.9rem;
-        }
-        .pulse-dot {
-            display: inline-block;
-            width: 9px;
-            height: 9px;
-            background: #3ce0cf;
-            border-radius: 50%;
-            margin-right: 6px;
-            animation: pulse 1s infinite;
-        }
-        @keyframes pulse { 0% { opacity: 0.5; } 100% { opacity: 1; transform: scale(1.1); } }
-
-        /* ---------- НОВЫЙ КРУГОВОЙ ИНДИКАТОР (мало кто знает такой трюк с CSS-диаграммой) ---------- */
-        .skills-ring {
+            background: linear-gradient(145deg, #0a2f1f 0%, #071a0f 100%);
             display: flex;
             justify-content: center;
-            gap: 2rem;
-            flex-wrap: wrap;
-            margin: 1rem 0 1.5rem;
+            align-items: center;
+            font-family: 'Courier New', 'Monaco', monospace;
+            font-weight: bold;
+            padding: 20px;
         }
-        .ring-item {
-            text-align: center;
-            width: 100px;
+
+        .game-container {
+            background: #1a2a1f;
+            border-radius: 48px;
+            padding: 20px;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.5), inset 0 1px 4px rgba(255,255,255,0.1);
         }
-        .ring-canvas {
-            width: 90px;
-            height: 90px;
+
+        canvas {
+            display: block;
             margin: 0 auto;
+            border-radius: 28px;
+            box-shadow: 0 0 0 4px #5a3e2b, 0 12px 28px black;
+            cursor: crosshair;
+            background-color: #2d4a2a;
         }
-        .ring-canvas svg {
-            transform: rotate(-90deg);
-            width: 100%;
-            height: 100%;
+
+        .ui-panel {
+            margin-top: 18px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            background: #0e1e0bdd;
+            backdrop-filter: blur(4px);
+            padding: 12px 20px;
+            border-radius: 60px;
+            border: 1px solid #cbb87b;
         }
-        .ring-canvas circle {
-            fill: none;
-            stroke-width: 7;
-            stroke-linecap: round;
+
+        .stats {
+            display: flex;
+            gap: 28px;
+            background: #020d01;
+            padding: 8px 24px;
+            border-radius: 40px;
+            color: #f9e7b3;
+            text-shadow: 0 2px 2px black;
         }
-        .ring-bg {
-            stroke: #2d2d55;
+
+        .stat {
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+            font-size: 1.3rem;
         }
-        .ring-progress {
-            stroke: url(#gradRing);
-            stroke-dasharray: 251.2;
-            stroke-dashoffset: calc(251.2 - (251.2 * var(--percent)) / 100);
-            transition: stroke-dashoffset 0.8s ease;
+
+        .stat span:first-child {
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            color: #b4ec9c;
         }
-        .ring-value {
-            margin-top: 8px;
+
+        .stat span:last-child {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #ffd966;
+        }
+
+        .weapon-upgrade {
+            background: #2c2418;
+            padding: 6px 18px;
+            border-radius: 40px;
+            display: flex;
+            gap: 18px;
+        }
+
+        button {
+            background: #6b3e1c;
+            border: none;
+            font-family: monospace;
             font-weight: bold;
             font-size: 1rem;
-            background: linear-gradient(135deg, #cbadff, #7fc9ff);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+            padding: 8px 20px;
+            border-radius: 60px;
+            color: #ffefc0;
+            cursor: pointer;
+            transition: 0.1s linear;
+            box-shadow: 0 4px 0 #2d1a0a;
         }
 
-        /* Анимированный neuralink-индикатор */
-        .neural-stats {
-            background: #0e0e20;
-            border-radius: 26px;
-            padding: 1rem;
-            margin: 1rem 0;
-            border-left: 3px solid #2effdb;
+        button:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #2d1a0a;
         }
-        .neon-glow-text {
-            font-weight: 700;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+
+        .wave-info {
+            background: #030f02;
+            padding: 5px 18px;
+            border-radius: 32px;
+            font-size: 1.3rem;
+            color: #ffb347;
         }
-        .brain-wave {
-            background: #1b1c33;
-            border-radius: 40px;
-            height: 10px;
-            width: 100%;
-            overflow: hidden;
-        }
-        .brain-fill {
-            width: 78%;
-            height: 100%;
-            background: linear-gradient(90deg, #aa7eff, #3ce0cf);
-            border-radius: 40px;
-            transition: width 0.1s linear;
-        }
-        .notification {
-            position: fixed;
-            bottom: 25px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: #1f1f3a;
-            backdrop-filter: blur(12px);
-            padding: 10px 24px;
-            border-radius: 60px;
-            font-size: 0.9rem;
-            border-left: 3px solid #3ce0cf;
-            transition: transform 0.3s ease;
-            z-index: 999;
-            pointer-events: none;
-        }
-        .notification.show {
-            transform: translateX(-50%) translateY(0);
-        }
-        /* кнопка наверх */
-        .go-top {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 44px;
-            height: 44px;
-            background: #684eff;
-            border-radius: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            opacity: 0;
-            transition: 0.2s;
-            box-shadow: 0 4px 12px black;
-            color: white;
-            z-index: 99;
-            pointer-events: none;
-        }
-        .go-top.visible {
-            opacity: 1;
-            pointer-events: auto;
-        }
-        @media (max-width: 560px) {
-            .container { padding: 1rem; }
-            h1 { font-size: 1.8rem; }
+
+        @media (max-width: 750px) {
+            .stats { gap: 12px; padding: 4px 16px; }
+            .stat span:last-child { font-size: 1.2rem; }
+            button { padding: 4px 12px; font-size: 0.7rem; }
         }
     </style>
 </head>
 <body>
-
-<div class="container">
-    <header>
-        <h1>Дипломная работа</h1>
-        <p class="subtitle">Кочевов Кирилл Денисович · Веб-дизайн и разработка</p>
-        <div class="progress-bar"><div class="progress-fill"></div></div>
-        <div>
-            <span class="tech-badge">HTML5</span>
-            <span class="tech-badge">CSS3</span>
-            <span class="tech-badge">JavaScript</span>
-            <span class="tech-badge">UI/UX</span>
-        </div>
-    </header>
-
-    <div class="tab-container">
-        <div class="tab-buttons">
-            <div class="tab-button active" data-tab="tab1">Дипломная</div>
-            <div class="tab-button" data-tab="tab2">Обо мне</div>
-            <div class="tab-button" data-tab="tab3">Контакты</div>
-        </div>
-
-        <!-- Вкладка 1 -->
-        <div class="tab-content active" id="tab1">
-            <div class="counter"><span class="pulse-dot"></span> Посещений: <span id="visitCount">1</span></div>
-            <hr style="margin:12px 0">
-            <div class="clock-wrapper"><div id="clock">00:00:00</div></div>
-            
-            <nav>
-                <input type="checkbox" id="menu-toggle">
-                <label for="menu-toggle" class="hamburger"><span></span><span></span><span></span></label>
-                <ul>
-                    <li><a href="https://www.figma.com/design/aZF8NsbH1P7ddeNDilJzos/Untitled?node-id=0-1&t=AhJPRjwUvO68EK8Y-1" target="_blank">Figma</a></li>
-                    <li><a href="https://kochevov.wordpress.com/kursovaaa/" target="_blank">WordPress</a></li>
-                    <li><a href="https://onlinetestpad.com/4dvglwjhrtxwi" target="_blank">Тест</a></li>
-                    <li><a href="https://b24-s2y12k.bitrix24.ru/sites/?feature_promoter=limit_copilot" target="_blank">Битрикс24</a></li>
-                    <li><a href="https://jsitor.com/" target="_blank">JSitor</a></li>
-                    <li><a href="https://stackblitz.com/" target="_blank">StackBlitz</a></li>
-                    <li><a href="https://kirill222222222222.github.io/kursss/" target="_blank">Игра</a></li>
-                    <li><a href="https://kirill222222222222.github.io/kvadrober/" target="_blank">Сайт о погоде</a></li>
-                    <li><a href="https://kirill222222222222.github.io/-/" target="_blank">Разметки языков</a></li>
-                    <li><a href="https://kirill222222222222.github.io/kvest/" target="_blank">Квест по HTML</a></li>
-                    <li><a href="https://kirill222222222222.github.io/ddsda/" target="_blank">Сайт по отелю</a></li>
-                </ul>
-            </nav>
-
-            <div class="gradient-border">
-                <h3 style="margin:0 0 10px 0;">🌍 Выберите страну</h3>
-                <div class="country-selector">
-                    <select id="countrySelect">
-                        <option value="Россия">Россия</option><option value="Белоруссия">Белоруссия</option><option value="Казахстан">Казахстан</option>
-                        <option value="Армения">Армения</option><option value="Грузия">Грузия</option><option value="Таиланд">Таиланд</option>
-                    </select>
-                </div>
-                <p class="tooltip" style="font-size:0.8rem; margin-top: 12px;">🔍 Секрет: открой консоль (F12) — там приветствие!</p>
+<div>
+    <div class="game-container">
+        <canvas id="gameCanvas" width="1000" height="600"></canvas>
+        <div class="ui-panel">
+            <div class="stats">
+                <div class="stat">❤️ <span id="baseHp">100</span></div>
+                <div class="stat">🪙 <span id="coins">0</span></div>
+                <div class="stat">🔫 <span id="damageLvl">1</span></div>
+                <div class="stat">🗡️ <span id="fireRateLvl">1</span></div>
             </div>
-        </div>
-
-        <!-- Вкладка 2: Обо мне с круговой диаграммой skills и neuralink-индикатором (мало кто знает эту визуализацию) -->
-        <div class="tab-content" id="tab2">
-            <h2>Обо мне</h2>
-            <p><strong>Кочевов Кирилл</strong>, 23.08.2010. Учусь веб-дизайну, создаю современные сайты и обожаю интерактив. В планах — стать топ-дизайнером и fullstack разработчиком.</p>
-            
-            <!-- !!! Секретная фишка: кольцевая диаграмма навыков (используем SVG + CSS custom properties) -->
-            <div class="neural-stats">
-                <div class="neon-glow-text"><i class="fas fa-microchip"></i> Neuralink-уровень разработчика</div>
-                <div class="brain-wave"><div class="brain-fill" id="neuralFill" style="width: 76%;"></div></div>
-                <div style="font-size:0.7rem; margin-top: 6px;">⭐ синхронизация с кодом: <span id="neuralPercent">76</span>% • продуктивность растёт</div>
+            <div class="weapon-upgrade">
+                <button id="upgradeDmg">💥 +Урон (💰 40)</button>
+                <button id="upgradeSpeed">⚡ +Скорость (💰 35)</button>
             </div>
-            
-            <h3>📈 Спектр знаний (круговая диаграмма — редко где встретишь)</h3>
-            <div class="skills-ring" id="skillsRingContainer">
-                <!-- SVG круги будут вставлены через JS, но можно и статично -->
+            <div class="wave-info">
+                🌊 Волна <span id="waveNum">1</span> 
+                <span style="font-size:0.8rem;">🧟‍♂️ <span id="zombiesLeft">0</span></span>
             </div>
-            
-            <div class="gradient-border">
-                <h3>📌 Hard Skills</h3>
-                <div>HTML/CSS (85%)</div>
-                <div class="skill-bar" style="background:#2c2c44; border-radius:20px; height:8px; margin:5px 0"><div style="width:85%; background:#aa7eff; height:8px; border-radius:20px;"></div></div>
-                <div>JavaScript (65%)</div>
-                <div class="skill-bar" style="background:#2c2c44; border-radius:20px; height:8px; margin:5px 0"><div style="width:65%; background:#aa7eff; height:8px; border-radius:20px;"></div></div>
-                <div>Figma / UI дизайн (80%)</div>
-                <div class="skill-bar" style="background:#2c2c44; border-radius:20px; height:8px; margin:5px 0"><div style="width:80%; background:#aa7eff; height:8px; border-radius:20px;"></div></div>
-            </div>
-        </div>
-
-        <!-- Вкладка 3: Контакты -->
-        <div class="tab-content" id="tab3">
-            <h2>Контакты</h2>
-            <div class="contact-info">
-                <div class="contact-item"><i class="fas fa-envelope"></i><span>Email: <a href="mailto:kkocevov@gmail.com">kkocevov@gmail.com</a></span></div>
-                <div class="contact-item"><i class="fas fa-phone-alt"></i><span>Тел: <a href="tel:+79149559996">+7 914 955-99-96</a></span></div>
-                <div class="contact-item"><i class="fab fa-telegram"></i><span>Telegram: <a href="https://t.me/Ded_Bunkere" target="_blank">@Ded_Bunkere</a></span></div>
-            </div>
-            <div class="gradient-border"><h3>Сотрудничество</h3><p>Всегда открыт к новым идеям и проектам. Свяжитесь любым удобным способом!</p></div>
         </div>
     </div>
+    <div style="text-align: center; margin-top: 16px; color:#b9d2a5; font-size: 13px;">
+        🖱️ КЛИК по зомби = убить ➕ получить монеты | 🧟‍♂️ доходят до базы ➡️ отнимают здоровье
+    </div>
 </div>
-<div id="globalNotif" class="notification">✨ Добро пожаловать в дипломную работу</div>
-<div class="go-top" id="goTopBtn"><i class="fas fa-arrow-up"></i></div>
 
 <script>
-    // 1️⃣ Часы
-    function updateClock(){ const d=new Date(); clock.innerText=`${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}:${d.getSeconds().toString().padStart(2,'0')}`; }
-    const clock=document.getElementById('clock'); updateClock(); setInterval(updateClock,1000);
+    (function(){
+        // ------ CANVAS -------
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
 
-    // 2️⃣ Табы
-    document.querySelectorAll('.tab-button').forEach(btn=>{
-        btn.addEventListener('click',()=>{
-            document.querySelectorAll('.tab-button').forEach(b=>b.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
-            btn.classList.add('active');
-            document.getElementById(btn.dataset.tab).classList.add('active');
-        });
-    });
-    
-    // 3️⃣ Счетчик посещений
-    let visits = localStorage.getItem('visitDiplom')? Number(localStorage.getItem('visitDiplom'))+1 : 1;
-    localStorage.setItem('visitDiplom', visits);
-    document.getElementById('visitCount').innerText = visits;
-    
-    // 4️⃣ Уведомления
-    const notifDiv = document.getElementById('globalNotif');
-    function showMsg(msg, time=2200){
-        if(!notifDiv) return;
-        notifDiv.innerText = msg;
-        notifDiv.classList.add('show');
-        setTimeout(()=>notifDiv.classList.remove('show'), time);
-    }
-    setTimeout(()=>showMsg(`👋 Привет! Посещений: ${visits}`, 2800), 500);
-    
-    // 5️⃣ Выбор страны
-    document.getElementById('countrySelect')?.addEventListener('change',(e)=>showMsg(`🌍 Выбрано: ${e.target.value}`, 1500));
-    
-    // 6️⃣ Кнопка наверх
-    const topBtn = document.getElementById('goTopBtn');
-    window.addEventListener('scroll',()=>{ if(window.scrollY>200) topBtn.classList.add('visible'); else topBtn.classList.remove('visible'); });
-    topBtn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
-    
-    // 7️⃣ ==========  СЕКРЕТНАЯ ФИШКА: КОЛЬЦЕВЫЕ ДИАГРАММЫ + ЭФФЕКТ "Neuralink" ==========
-    // Создаём круговые диаграммы навыков (простая SVG-магия, мало кто её использует)
-    const skillsData = [
-        { name: "HTML/CSS", percent: 88, color: "#b87cff" },
-        { name: "JavaScript", percent: 64, color: "#62dafb" },
-        { name: "Figma", percent: 79, color: "#3ce0cf" }
-    ];
-    const ringContainer = document.getElementById("skillsRingContainer");
-    if(ringContainer){
-        ringContainer.innerHTML = '';
-        const radius = 40, circumference = 2 * Math.PI * radius; // ~251.2
-        skillsData.forEach(skill => {
-            const percent = skill.percent;
-            const offset = circumference - (circumference * percent) / 100;
-            const wrapper = document.createElement('div');
-            wrapper.className = 'ring-item';
-            wrapper.innerHTML = `
-                <div class="ring-canvas">
-                    <svg viewBox="0 0 100 100">
-                        <defs><linearGradient id="gradRing" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#a96eff" /><stop offset="100%" stop-color="#2effdb" /></linearGradient></defs>
-                        <circle class="ring-bg" cx="50" cy="50" r="40" stroke="#2d2d55" />
-                        <circle class="ring-progress" cx="50" cy="50" r="40" stroke="url(#gradRing)" stroke-dasharray="${circumference}" stroke-dashoffset="${offset}" style="--percent: ${percent};" />
-                        <text x="50" y="56" text-anchor="middle" fill="#f0f0ff" font-size="16" font-weight="bold">${percent}%</text>
-                    </svg>
-                </div>
-                <div class="ring-value">${skill.name}</div>
-            `;
-            ringContainer.appendChild(wrapper);
-        });
-    }
-    
-    // Эмуляция "нейросетевого" уровня: рандомное небольшое изменение при каждом посещении для живости
-    const neuralFill = document.getElementById('neuralFill');
-    const neuralSpan = document.getElementById('neuralPercent');
-    if(neuralFill && neuralSpan){
-        let base = 76;
-        let variance = Math.floor(Math.random() * 9) - 2; // -2..6
-        let final = Math.min(98, Math.max(62, base + variance));
-        neuralFill.style.width = final + '%';
-        neuralSpan.innerText = final;
-    }
-    
-    // 8️⃣ СЕКРЕТ В КОНСОЛИ (мало кто знает, что можно оставлять сообщения для разработчиков)
-    console.log("%c🔥 СЕКРЕТНЫЙ УРОВЕНЬ ОТ КИРИЛЛА 🔥", "color: #3ce0cf; font-size: 16px; font-weight: bold;");
-    console.log("%cПривет, продвинутый пользователь! Если ты читаешь это — ты входишь в 1% лучших.", "color: #bc9eff; font-size: 12px;");
-    console.log("%c💡 Интересный факт: первая версия интернета появилась в 1969 году (ARPANET). А сегодня ты смотришь на страницу с круговыми SVG-диаграммами!", "background: #00000066; padding: 4px; border-radius: 8px;");
-    console.log("%c🎯 Совет: попробуй изменить значение посещений в localStorage и перезагрузить страницу ;)", "color: #ffaa77");
-    
-    // Добавляем иконки внешних ссылок
-    document.querySelectorAll('nav ul li a').forEach(link => {
-        if(link.hostname && link.hostname !== window.location.hostname && !link.querySelector('.fa-external-link-alt')) {
-            let icon = document.createElement('i'); icon.className = 'fas fa-external-link-alt'; icon.style.fontSize = '0.7rem'; icon.style.marginLeft = '6px';
-            link.appendChild(icon);
+        // ------ ИГРОВЫЕ РАЗМЕРЫ ------
+        const CW = 1000, CH = 600;
+        canvas.width = CW; canvas.height = CH;
+
+        // ------ БАЗА ------
+        const base = { x: CW-80, y: CH-120, w: 70, h: 85, hp: 100, maxHp: 100 };
+
+        // ------ МОНЕТКИ (лут) ------
+        let coins = 0;
+        let coinItems = []; // { x, y, value }
+
+        // ------ ЗОМБИ ------
+        let zombies = [];
+        let wave = 1;
+        let zombiesToSpawn = 0;
+        let waveInProgress = false;
+        let spawnTimer = 0;
+        let enemiesLeft = 0;
+        
+        // ------ ОРУЖИЕ (прокачка) ------
+        let damageLevel = 1;       // базовый урон 10 + уровень*4
+        let fireRateLevel = 1;     // задержка между выстрелами: 400мс / (уровень*0.2 + 0.8)
+        let lastShotFrame = 0;
+        
+        // ------ ПАРАМЕТРЫ ВОЛН ------
+        let frame = 0;
+        let gameOver = false;
+        
+        // ---------- ФУНКЦИИ ПРОКАЧКИ ----------
+        function getDamage(){
+            return 10 + (damageLevel-1) * 6;  // 10,16,22,28...
         }
-    });
+        
+        function getShootDelayMs(){
+            let baseDelay = 420;
+            let reduction = (fireRateLevel-1) * 55;
+            let finalDelay = Math.max(150, baseDelay - reduction);
+            return finalDelay;
+        }
+        
+        // стоимость апгрейда
+        function getDamageUpgradeCost(){
+            return 35 + (damageLevel-1)*12;
+        }
+        function getFireRateUpgradeCost(){
+            return 30 + (fireRateLevel-1)*10;
+        }
+        
+        // ---------- ГЕНЕРАЦИЯ МОНЕТОК ПРИ СМЕРТИ ----------
+        function spawnCoinFromZombie(zx, zy){
+            let value = 3 + Math.floor(Math.random() * 6); // 3-8 монет
+            if(wave >= 5) value += 2;
+            if(wave >= 10) value += 3;
+            coinItems.push({
+                x: zx + 10, y: zy + 15, value: value,
+                life: 1.0   // для анимации
+            });
+        }
+        
+        // ---------- УРОН ПО ЗОМБИ (КЛИК МЫШИ) ----------
+        function shootAt(x, y){
+            if(gameOver) return false;
+            let currentDamage = getDamage();
+            let hit = false;
+            for(let i=0; i<zombies.length; i++){
+                const z = zombies[i];
+                const zLeft = z.x - 20, zRight = z.x + 35, zTop = z.y-15, zBottom = z.y+40;
+                if(x >= zLeft && x <= zRight && y >= zTop && y <= zBottom){
+                    z.hp -= currentDamage;
+                    hit = true;
+                    if(z.hp <= 0){
+                        // смерть зомби
+                        spawnCoinFromZombie(z.x, z.y);
+                        zombies.splice(i,1);
+                        enemiesLeft--;
+                    }
+                    break; // один выстрел убивает/ранит одного зомби
+                }
+            }
+            if(hit){
+                // визуальный фидбек
+                drawHitEffect(x,y);
+                return true;
+            }
+            return false;
+        }
+        
+        // эффект попадания (вспышка)
+        let hitEffects = [];
+        function drawHitEffect(x,y){
+            hitEffects.push({x:x, y:y, timer:6});
+        }
+        
+        // ---------- ВОЛНЫ ----------
+        function startWave(){
+            if(gameOver) return;
+            waveInProgress = true;
+            let baseSpawn = 4 + Math.floor(wave * 1.3);
+            if(wave > 8) baseSpawn = 8 + Math.floor(wave * 0.9);
+            zombiesToSpawn = Math.min(28, baseSpawn);
+            enemiesLeft = zombiesToSpawn;
+            spawnTimer = 12; // кадров между спавнами
+        }
+        
+        function spawnZombie(){
+            if(zombiesToSpawn <= 0) return;
+            // статы зомби растут с волной
+            let health = 25 + Math.floor(wave * 5.5);
+            if(wave > 6) health += 8;
+            if(wave > 12) health += 15;
+            let speed = 0.9 + wave * 0.07;
+            speed = Math.min(3.8, speed);
+            let damage = 8 + Math.floor(wave/3);
+            let reward = 5;
+            zombies.push({
+                x: 20 + Math.random() * 110,
+                y: 60 + Math.random() * (CH-150),
+                hp: health,
+                maxHp: health,
+                speed: speed,
+                damage: damage,
+                width: 32,
+                height: 42
+            });
+            zombiesToSpawn--;
+        }
+        
+        // обновление зомби: движение к базе
+        function updateZombies(){
+            for(let i=0; i<zombies.length; i++){
+                const z = zombies[i];
+                // направление к базе (центр базы)
+                const targetX = base.x + base.w/2 - 15;
+                const targetY = base.y + base.h/2 - 15;
+                const dx = targetX - z.x;
+                const dy = targetY - z.y;
+                const len = Math.hypot(dx,dy);
+                if(len > 0.5){
+                    const move = Math.min(z.speed, len);
+                    z.x += (dx/len) * move;
+                    z.y += (dy/len) * move;
+                }
+                // проверка столкновения с базой
+                if(z.x + 20 > base.x && z.x - 15 < base.x+base.w && z.y+20 > base.y && z.y-10 < base.y+base.h){
+                    // атака базы
+                    base.hp -= z.damage;
+                    if(base.hp <= 0){
+                        base.hp = 0;
+                        gameOver = true;
+                        waveInProgress = false;
+                    }
+                    zombies.splice(i,1);
+                    enemiesLeft--;
+                    i--;
+                    updateBaseUI();
+                }
+            }
+        }
+        
+        // обновление монеток (анимация)
+        function updateCoins(){
+            for(let i=0;i<coinItems.length;i++){
+                coinItems[i].life -= 0.02;
+                if(coinItems[i].life <= 0){
+                    // добавить монеты в кошелек
+                    coins += coinItems[i].value;
+                    coinItems.splice(i,1);
+                    i--;
+                    updateCoinUI();
+                }
+            }
+        }
+        
+        // логика волн и спавна
+        function updateWaveSystem(){
+            if(gameOver) return;
+            if(!waveInProgress && zombies.length===0 && enemiesLeft===0 && zombiesToSpawn===0){
+                // конец волны -> следующая
+                wave++;
+                updateWaveUI();
+                startWave();
+            }
+            if(waveInProgress && spawnTimer <=0 && zombiesToSpawn>0){
+                spawnZombie();
+                spawnTimer = Math.max(18, 35 - Math.floor(wave/2));
+            } else if(spawnTimer>0){
+                spawnTimer--;
+            }
+        }
+        
+        // ---------- ОТРИСОВКА ВСЕГО ----------
+        function draw(){
+            ctx.clearRect(0,0,CW,CH);
+            // земля/трава
+            ctx.fillStyle = "#355a2b";
+            ctx.fillRect(0,0,CW,CH);
+            for(let i=0;i<120;i++){
+                ctx.fillStyle = "#4a7840";
+                ctx.beginPath();
+                ctx.arc( (i*131)%CW, (i*73)%CH, 3,0,Math.PI*2);
+                ctx.fill();
+            }
+            // дорожка к базе (эффект)
+            ctx.globalAlpha=0.3;
+            ctx.fillStyle = "#5f4c2b";
+            for(let i=0;i<3;i++) ctx.fillRect(base.x-85+i*8, base.y+20, 90, 25);
+            ctx.globalAlpha=1;
+            
+            // ---- РИСУЕМ БАЗУ ----
+            ctx.shadowBlur=0;
+            ctx.fillStyle="#7d5d42";
+            ctx.fillRect(base.x, base.y, base.w, base.h);
+            ctx.fillStyle="#b87c4f";
+            ctx.fillRect(base.x+10, base.y-18, 50, 22);
+            ctx.fillStyle="#e3b87c";
+            ctx.beginPath();
+            ctx.rect(base.x+25, base.y-6, 20, 12);
+            ctx.fill();
+            ctx.fillStyle = "#ff6a4b";
+            ctx.font="bold 22px monospace";
+            ctx.fillText("🏠", base.x+22, base.y+48);
+            // полоска здоровья базы
+            let hpPercent = base.hp/base.maxHp;
+            ctx.fillStyle = "#511010";
+            ctx.fillRect(base.x-5, base.y-30, 80, 12);
+            ctx.fillStyle = "#d44a2a";
+            ctx.fillRect(base.x-5, base.y-30, 80*hpPercent, 12);
+            ctx.fillStyle="white";
+            ctx.font="bold 14px monospace";
+            ctx.fillText(`${Math.max(0,base.hp)}/${base.maxHp}`, base.x+12, base.y-20);
+            
+            // ---- ЗОМБИ ----
+            for(let z of zombies){
+                let healthPercent = z.hp/z.maxHp;
+                ctx.fillStyle="#2f6b2f";
+                ctx.beginPath();
+                ctx.ellipse(z.x+12, z.y+15, 18, 25, 0, 0, Math.PI*2);
+                ctx.fill();
+                ctx.fillStyle="#39613a";
+                ctx.beginPath();
+                ctx.ellipse(z.x+10, z.y+5, 12, 15, 0, 0, Math.PI*2);
+                ctx.fill();
+                ctx.fillStyle="#2a2418";
+                ctx.fillRect(z.x+3, z.y-2, 10, 6);
+                ctx.fillRect(z.x+15, z.y-2, 10, 6);
+                ctx.fillStyle="#7c3c1c";
+                ctx.beginPath();
+                ctx.ellipse(z.x+10, z.y+20, 10, 7, 0, 0, Math.PI*2);
+                ctx.fill();
+                ctx.fillStyle="#9a2f1f";
+                ctx.beginPath();
+                ctx.ellipse(z.x+6, z.y+12, 3, 4, 0, 0, Math.PI*2);
+                ctx.ellipse(z.x+18, z.y+12, 3, 4, 0, 0, Math.PI*2);
+                ctx.fill();
+                ctx.fillStyle="#27211a";
+                ctx.fillRect(z.x+8, z.y+29, 12, 5);
+                ctx.fillStyle="#a5563a";
+                ctx.font = "bold 16px monospace";
+                ctx.fillText("🧟", z.x+2, z.y+10);
+                // полоска хп зомби
+                ctx.fillStyle="#2f1e0a";
+                ctx.fillRect(z.x-5, z.y-12, 44, 8);
+                ctx.fillStyle="#cb3f1f";
+                ctx.fillRect(z.x-5, z.y-12, 44*healthPercent, 8);
+                ctx.fillStyle="#ffbf80";
+                ctx.font = "10px monospace";
+                ctx.fillText(`${z.hp}❤️`, z.x+5, z.y-3);
+            }
+            
+            // ---- МОНЕТКИ НА ЗЕМЛЕ ----
+            for(let c of coinItems){
+                ctx.fillStyle = "#f5bc42";
+                ctx.shadowBlur=6;
+                ctx.font = `${18+Math.sin(Date.now()*0.01)*2}px monospace`;
+                ctx.fillText("💰", c.x, c.y);
+                ctx.fillStyle = "#efb034";
+                ctx.font = "12px monospace";
+                ctx.fillText(`+${c.value}`, c.x+15, c.y-2);
+            }
+            ctx.shadowBlur=0;
+            
+            // эффекты попадания
+            for(let i=0;i<hitEffects.length;i++){
+                let h = hitEffects[i];
+                ctx.fillStyle = `rgba(255,200,80,${h.timer/6})`;
+                ctx.beginPath();
+                ctx.arc(h.x, h.y, 14,0,Math.PI*2);
+                ctx.fill();
+                h.timer--;
+                if(h.timer<=0) hitEffects.splice(i,1);
+            }
+            
+            // оружие / курсор
+            ctx.fillStyle = "#ecdc9a";
+            ctx.font = "bold 28px monospace";
+            ctx.fillText("🔫", 30, 65);
+            ctx.font = "bold 14px monospace";
+            ctx.fillStyle = "#ffecb3";
+            ctx.fillText(`урон ${getDamage()} | скоростр.`, 20, 105);
+            
+            if(gameOver){
+                ctx.globalAlpha=0.8;
+                ctx.fillStyle = "#1d1410";
+                ctx.fillRect(0,0,CW,CH);
+                ctx.globalAlpha=1;
+                ctx.font = "bold 38monospace";
+                ctx.fillStyle = "#dd5522";
+                ctx.fillText("⚰️ ВЫ ПРОИГРАЛИ ⚰️", CW/2-200, CH/2);
+                ctx.font = "24px monospace";
+                ctx.fillStyle = "#ffbe76";
+                ctx.fillText("Обновите страницу, чтобы начать заново", CW/2-230, CH/2+70);
+                return;
+            }
+            
+            // надпись волны и остатки
+            ctx.font = "bold 18px monospace";
+            ctx.fillStyle = "#eef7cf";
+            ctx.fillText(`Волна ${wave}  |  Осталось зомби: ${enemiesLeft}   спавн: ${zombiesToSpawn}`, 20, CH-24);
+        }
+        
+        // ---------- ОБНОВЛЕНИЕ UI ----------
+        function updateCoinUI(){
+            document.getElementById('coins').innerText = coins;
+        }
+        function updateBaseUI(){
+            document.getElementById('baseHp').innerText = Math.max(0,base.hp);
+        }
+        function updateWaveUI(){
+            document.getElementById('waveNum').innerText = wave;
+            document.getElementById('damageLvl').innerText = damageLevel;
+            document.getElementById('fireRateLvl').innerText = fireRateLevel;
+        }
+        function upgradeDamage(){
+            if(gameOver) return;
+            let cost = getDamageUpgradeCost();
+            if(coins >= cost){
+                coins -= cost;
+                damageLevel++;
+                updateCoinUI();
+                document.getElementById('damageLvl').innerText = damageLevel;
+                updateWaveUI();
+            } else {
+                let msg = document.createElement("div");
+                msg.innerText = "❗ Не хватает монет ❗";
+                msg.style.position="fixed"; msg.style.bottom="10px"; msg.style.left="30%";
+                msg.style.background="black"; msg.style.color="gold"; msg.style.padding="5px"; msg.style.borderRadius="20px";
+                document.body.appendChild(msg);
+                setTimeout(()=>msg.remove(),800);
+            }
+        }
+        function upgradeFireRate(){
+            if(gameOver) return;
+            let cost = getFireRateUpgradeCost();
+            if(coins >= cost){
+                coins -= cost;
+                fireRateLevel++;
+                updateCoinUI();
+                document.getElementById('fireRateLvl').innerText = fireRateLevel;
+                updateWaveUI();
+            } else {
+                let msg = document.createElement("div");
+                msg.innerText = "❗ Не хватает монет ❗";
+                msg.style.position="fixed"; msg.style.bottom="10px"; msg.style.left="30%";
+                msg.style.background="black"; msg.style.color="gold"; msg.style.padding="5px"; msg.style.borderRadius="20px";
+                document.body.appendChild(msg);
+                setTimeout(()=>msg.remove(),800);
+            }
+        }
+        
+        // ---------- ОБРАБОТЧИК ВЫСТРЕЛА (КЛИК ПО КАНВАСУ) ----------
+        let lastShotTime = 0;
+        function handleCanvasClick(e){
+            if(gameOver) return;
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            let mouseX = (e.clientX - rect.left) * scaleX;
+            let mouseY = (e.clientY - rect.top) * scaleY;
+            let now = Date.now();
+            let delay = getShootDelayMs();
+            if(now - lastShotTime >= delay){
+                lastShotTime = now;
+                shootAt(mouseX, mouseY);
+            } else {
+                // "дребезг" - слишком быстрый клик, но даём слабый визуал
+                ctx.fillStyle = "#ffaa55";
+                ctx.beginPath();
+                ctx.arc(mouseX, mouseY, 10, 0, Math.PI*2);
+                ctx.fill();
+                setTimeout(()=>{},5);
+            }
+        }
+        
+        // ---------- ОСНОВНОЙ ЦИКЛ UPDATE ----------
+        function gameUpdate(){
+            if(gameOver){
+                draw();
+                requestAnimationFrame(gameUpdate);
+                return;
+            }
+            updateZombies();
+            updateCoins();
+            updateWaveSystem();
+            draw();
+            // обновляем счетчик зомби в UI
+            document.getElementById('zombiesLeft').innerText = zombies.length + zombiesToSpawn;
+            requestAnimationFrame(gameUpdate);
+        }
+        
+        // ---------- ЗАПУСК И ПОДКЛЮЧЕНИЯ----------
+        function init(){
+            startWave();
+            updateCoinUI();
+            updateBaseUI();
+            updateWaveUI();
+            base.hp = 100; base.maxHp=100;
+            gameOver = false;
+            canvas.addEventListener('click', handleCanvasClick);
+            document.getElementById('upgradeDmg').addEventListener('click', upgradeDamage);
+            document.getElementById('upgradeSpeed').addEventListener('click', upgradeFireRate);
+            requestAnimationFrame(gameUpdate);
+        }
+        
+        init();
+    })();
 </script>
 </body>
 </html>
