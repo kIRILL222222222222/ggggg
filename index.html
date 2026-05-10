@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Zombie Defense - Защита базы с прокачкой</title>
+    <title>Zombie Survival - Убежище, эвакуация и волны зомби</title>
     <style>
         * {
             user-select: none;
@@ -13,520 +13,504 @@
         body {
             margin: 0;
             min-height: 100vh;
-            background: linear-gradient(145deg, #0a2f1f 0%, #071a0f 100%);
+            background: linear-gradient(145deg, #0a1f1a 0%, #030d08 100%);
             display: flex;
             justify-content: center;
             align-items: center;
-            font-family: 'Courier New', 'Monaco', monospace;
+            font-family: 'Courier New', monospace;
             font-weight: bold;
             padding: 20px;
         }
 
-        .game-container {
-            background: #1a2a1f;
+        .game-wrapper {
+            background: #1e2a1c;
             border-radius: 48px;
             padding: 20px;
-            box-shadow: 0 20px 35px rgba(0,0,0,0.5), inset 0 1px 4px rgba(255,255,255,0.1);
+            box-shadow: 0 20px 35px rgba(0,0,0,0.6);
         }
 
         canvas {
             display: block;
             margin: 0 auto;
             border-radius: 28px;
-            box-shadow: 0 0 0 4px #5a3e2b, 0 12px 28px black;
+            box-shadow: 0 0 0 4px #5c3e24, 0 10px 28px black;
             cursor: crosshair;
-            background-color: #2d4a2a;
+            background-color: #253d1e;
         }
 
-        .ui-panel {
-            margin-top: 18px;
+        .ui-bar {
+            margin-top: 16px;
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
             gap: 12px;
-            background: #0e1e0bdd;
-            backdrop-filter: blur(4px);
-            padding: 12px 20px;
+            background: #0c1809dd;
+            backdrop-filter: blur(5px);
+            padding: 10px 20px;
             border-radius: 60px;
-            border: 1px solid #cbb87b;
+            border: 1px solid #dbb46a;
         }
 
         .stats {
             display: flex;
-            gap: 28px;
-            background: #020d01;
-            padding: 8px 24px;
+            gap: 24px;
+            background: #030b01;
+            padding: 5px 20px;
             border-radius: 40px;
-            color: #f9e7b3;
-            text-shadow: 0 2px 2px black;
+            color: #ffe1a0;
         }
 
         .stat {
             display: flex;
             align-items: baseline;
             gap: 6px;
-            font-size: 1.3rem;
+            font-size: 1.1rem;
         }
 
         .stat span:first-child {
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-            color: #b4ec9c;
+            font-size: 0.85rem;
+            color: #b3f0a0;
         }
 
         .stat span:last-child {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             font-weight: bold;
-            color: #ffd966;
+            color: #ffcd7e;
         }
 
-        .weapon-upgrade {
-            background: #2c2418;
-            padding: 6px 18px;
-            border-radius: 40px;
+        .upgrades {
             display: flex;
-            gap: 18px;
+            gap: 12px;
         }
 
         button {
-            background: #6b3e1c;
+            background: #6d3e1c;
             border: none;
             font-family: monospace;
             font-weight: bold;
-            font-size: 1rem;
-            padding: 8px 20px;
-            border-radius: 60px;
-            color: #ffefc0;
+            padding: 6px 14px;
+            border-radius: 50px;
+            color: #fff0cf;
             cursor: pointer;
-            transition: 0.1s linear;
-            box-shadow: 0 4px 0 #2d1a0a;
+            transition: 0.07s linear;
+            box-shadow: 0 3px 0 #2f1a0a;
+            font-size: 0.9rem;
         }
 
         button:active {
             transform: translateY(2px);
-            box-shadow: 0 2px 0 #2d1a0a;
+            box-shadow: 0 1px 0 #2f1a0a;
         }
 
-        .wave-info {
-            background: #030f02;
-            padding: 5px 18px;
+        .wave-badge {
+            background: #0f2b0a;
+            padding: 4px 18px;
             border-radius: 32px;
-            font-size: 1.3rem;
-            color: #ffb347;
+            font-size: 1.2rem;
+            color: #ffbc5e;
         }
-
-        @media (max-width: 750px) {
-            .stats { gap: 12px; padding: 4px 16px; }
-            .stat span:last-child { font-size: 1.2rem; }
-            button { padding: 4px 12px; font-size: 0.7rem; }
+        @media (max-width: 760px) {
+            .stats { gap: 10px; padding: 2px 12px; }
+            .stat span:last-child { font-size: 1.1rem; }
+            button { padding: 3px 10px; font-size: 0.7rem; }
         }
     </style>
 </head>
 <body>
 <div>
-    <div class="game-container">
-        <canvas id="gameCanvas" width="1000" height="600"></canvas>
-        <div class="ui-panel">
+    <div class="game-wrapper">
+        <canvas id="gameCanvas" width="1100" height="650"></canvas>
+        <div class="ui-bar">
             <div class="stats">
-                <div class="stat">❤️ <span id="baseHp">100</span></div>
+                <div class="stat">❤️ <span id="playerHp">80</span></div>
                 <div class="stat">🪙 <span id="coins">0</span></div>
-                <div class="stat">🔫 <span id="damageLvl">1</span></div>
-                <div class="stat">🗡️ <span id="fireRateLvl">1</span></div>
+                <div class="stat">⚔️ <span id="dmgLvl">1</span></div>
+                <div class="stat">🏃 <span id="speedLvl">1</span></div>
+                <div class="stat">🔫 <span id="fireLvl">1</span></div>
             </div>
-            <div class="weapon-upgrade">
-                <button id="upgradeDmg">💥 +Урон (💰 40)</button>
-                <button id="upgradeSpeed">⚡ +Скорость (💰 35)</button>
+            <div class="upgrades">
+                <button id="upgradeDmg">🗡️ Урон (45💰)</button>
+                <button id="upgradeSpeed">👟 Скорость (40💰)</button>
+                <button id="upgradeFire">⚡ Перезарядка (50💰)</button>
             </div>
-            <div class="wave-info">
-                🌊 Волна <span id="waveNum">1</span> 
-                <span style="font-size:0.8rem;">🧟‍♂️ <span id="zombiesLeft">0</span></span>
+            <div class="wave-badge">
+                🌊 Волна <span id="waveNum">1</span> | 🧟 <span id="zombiesLeft">0</span>
             </div>
         </div>
     </div>
-    <div style="text-align: center; margin-top: 16px; color:#b9d2a5; font-size: 13px;">
-        🖱️ КЛИК по зомби = убить ➕ получить монеты | 🧟‍♂️ доходят до базы ➡️ отнимают здоровье
+    <div style="text-align: center; margin-top: 14px; color:#b9daa4; font-size: 12px;">
+        🧭 WASD / стрелки — движение | 🔫 Клик по зомби = выстрел | 🩸 Зомби отнимают здоровье при касании | ⭐️ Элитные варианты сильнее
     </div>
 </div>
 
 <script>
     (function(){
-        // ------ CANVAS -------
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
-
-        // ------ ИГРОВЫЕ РАЗМЕРЫ ------
-        const CW = 1000, CH = 600;
+        const CW = 1100, CH = 650;
         canvas.width = CW; canvas.height = CH;
-
-        // ------ БАЗА ------
-        const base = { x: CW-80, y: CH-120, w: 70, h: 85, hp: 100, maxHp: 100 };
-
-        // ------ МОНЕТКИ (лут) ------
-        let coins = 0;
-        let coinItems = []; // { x, y, value }
-
-        // ------ ЗОМБИ ------
+        
+        // ----- ИГРОК -----
+        let player = {
+            x: CW/2, y: CH/2,
+            hp: 80,
+            maxHp: 80,
+            radius: 18,
+            speed: 3.6,
+            baseSpeed: 3.6,
+            invincibleTimer: 0
+        };
+        
+        // ----- ВОЛНЫ И ЗОМБИ -----
         let zombies = [];
         let wave = 1;
-        let zombiesToSpawn = 0;
-        let waveInProgress = false;
-        let spawnTimer = 0;
+        let waveActive = true;
+        let enemiesToSpawn = 0;
         let enemiesLeft = 0;
-        
-        // ------ ОРУЖИЕ (прокачка) ------
-        let damageLevel = 1;       // базовый урон 10 + уровень*4
-        let fireRateLevel = 1;     // задержка между выстрелами: 400мс / (уровень*0.2 + 0.8)
-        let lastShotFrame = 0;
-        
-        // ------ ПАРАМЕТРЫ ВОЛН ------
-        let frame = 0;
+        let spawnDelay = 0;
         let gameOver = false;
         
-        // ---------- ФУНКЦИИ ПРОКАЧКИ ----------
+        // ----- МОНЕТЫ (выпадают при смерти зомби)-----
+        let coins = 0;
+        let coinDrops = []; // {x, y, value}
+        
+        // ----- УРОВНИ ПРОКАЧКИ-----
+        let dmgLevel = 1;       // базовый урон 14 + 7 за уровень
+        let speedLevel = 1;     // скорость игрока = 3.4 + 0.55*level
+        let fireRateLevel = 1;   // задержка между выстрелами 380ms -> -45ms за уровень (мин 130)
+        
+        // СИСТЕМА СТРЕЛЬБЫ
+        let lastShotTime = 0;
+        
+        // -------- БАЗОВЫЕ ФУНКЦИИ --------
         function getDamage(){
-            return 10 + (damageLevel-1) * 6;  // 10,16,22,28...
+            return 14 + (dmgLevel-1) * 7;
+        }
+        function getPlayerSpeed(){
+            return 3.4 + (speedLevel-1)*0.55;
+        }
+        function getShootDelay(){
+            let delay = 380 - (fireRateLevel-1)*42;
+            return Math.max(130, delay);
         }
         
-        function getShootDelayMs(){
-            let baseDelay = 420;
-            let reduction = (fireRateLevel-1) * 55;
-            let finalDelay = Math.max(150, baseDelay - reduction);
-            return finalDelay;
+        // апдейт UI
+        function updateUI(){
+            document.getElementById('playerHp').innerText = Math.max(0, player.hp);
+            document.getElementById('coins').innerText = coins;
+            document.getElementById('dmgLvl').innerText = dmgLevel;
+            document.getElementById('speedLvl').innerText = speedLevel;
+            document.getElementById('fireLvl').innerText = fireRateLevel;
+            document.getElementById('waveNum').innerText = wave;
+            document.getElementById('zombiesLeft').innerText = enemiesLeft;
         }
         
-        // стоимость апгрейда
-        function getDamageUpgradeCost(){
-            return 35 + (damageLevel-1)*12;
-        }
-        function getFireRateUpgradeCost(){
-            return 30 + (fireRateLevel-1)*10;
-        }
+        // стоимости апгрейдов
+        function dmgCost(){ return 40 + (dmgLevel-1)*12; }
+        function speedCost(){ return 35 + (speedLevel-1)*10; }
+        function fireCost(){ return 45 + (fireRateLevel-1)*14; }
         
-        // ---------- ГЕНЕРАЦИЯ МОНЕТОК ПРИ СМЕРТИ ----------
-        function spawnCoinFromZombie(zx, zy){
-            let value = 3 + Math.floor(Math.random() * 6); // 3-8 монет
-            if(wave >= 5) value += 2;
-            if(wave >= 10) value += 3;
-            coinItems.push({
-                x: zx + 10, y: zy + 15, value: value,
-                life: 1.0   // для анимации
+        // ----- СПАВН ЗОМБИ (разные механики)-----
+        function spawnZombie(){
+            if(enemiesToSpawn <= 0) return;
+            let side = Math.floor(Math.random() * 4);
+            let x = 0, y = 0;
+            if(side === 0){ x = 20 + Math.random() * 100; y = 20 + Math.random() * CH; }
+            else if(side === 1){ x = CW - 70 + Math.random() * 60; y = 20 + Math.random() * CH; }
+            else if(side === 2){ x = 20 + Math.random() * CW; y = 20 + Math.random() * 80; }
+            else { x = 20 + Math.random() * CW; y = CH - 70 + Math.random() * 60; }
+            
+            // Уникальные типы зомби с механиками
+            let typeRoll = Math.random();
+            let isElite = (wave >= 4 && typeRoll < 0.2) || (wave >= 8 && typeRoll < 0.3);
+            let variant = "normal";
+            if(isElite){
+                let r = Math.random();
+                if(r < 0.4) variant = "tank";
+                else if(r < 0.7) variant = "fast";
+                else variant = "toxic";
+            } else {
+                if(wave > 5 && Math.random()<0.2) variant = "fast";
+            }
+            
+            let health = 32 + Math.floor(wave * 4.2);
+            let speed = 1.0 + wave * 0.09;
+            let damage = 9 + Math.floor(wave/3);
+            let color = "#3d6b2f";
+            let radius = 18;
+            
+            if(variant === "tank"){
+                health = Math.floor(health * 2.1);
+                speed *= 0.62;
+                damage += 5;
+                color = "#6f4e2e";
+                radius = 26;
+            } else if(variant === "fast"){
+                health = Math.floor(health * 0.7);
+                speed *= 1.9;
+                damage = Math.max(5, damage-3);
+                color = "#93763b";
+                radius = 16;
+            } else if(variant === "toxic"){
+                health = Math.floor(health * 1.2);
+                speed *= 1.1;
+                damage += 2;
+                color = "#6c835c";
+            }
+            
+            health = Math.min(240, health);
+            speed = Math.min(4.6, speed);
+            
+            zombies.push({
+                x: x, y: y, hp: health, maxHp: health,
+                speed: speed, damage: damage, radius: radius,
+                variant: variant, color: color
             });
+            enemiesToSpawn--;
+            enemiesLeft++;
         }
         
-        // ---------- УРОН ПО ЗОМБИ (КЛИК МЫШИ) ----------
-        function shootAt(x, y){
-            if(gameOver) return false;
-            let currentDamage = getDamage();
-            let hit = false;
+        // старт волны
+        function startWave(){
+            if(gameOver) return;
+            waveActive = true;
+            let baseCount = 5 + Math.floor(wave * 1.1);
+            if(wave > 10) baseCount = 8 + Math.floor(wave * 0.8);
+            enemiesToSpawn = Math.min(42, baseCount);
+            enemiesLeft = 0;
+            spawnDelay = 14;
+        }
+        
+        // Обновление волн (и конца волны)
+        function updateWaveManagement(){
+            if(gameOver) return;
+            if(waveActive && spawnDelay <= 0 && enemiesToSpawn > 0){
+                spawnZombie();
+                spawnDelay = Math.max(18, 40 - Math.floor(wave/2));
+            } else if(spawnDelay > 0){
+                spawnDelay--;
+            }
+            if(waveActive && enemiesToSpawn === 0 && zombies.length === 0){
+                waveActive = false;
+                wave++;
+                // бонус монет за волну
+                coins += 30 + wave*2;
+                updateUI();
+                startWave();
+            }
+        }
+        
+        // движение зомби к игроку
+        function updateZombies(){
             for(let i=0; i<zombies.length; i++){
                 const z = zombies[i];
-                const zLeft = z.x - 20, zRight = z.x + 35, zTop = z.y-15, zBottom = z.y+40;
-                if(x >= zLeft && x <= zRight && y >= zTop && y <= zBottom){
-                    z.hp -= currentDamage;
-                    hit = true;
+                const dx = player.x - z.x;
+                const dy = player.y - z.y;
+                const dist = Math.hypot(dx,dy);
+                if(dist > 0.01){
+                    let move = Math.min(z.speed, dist - (z.radius+player.radius-2));
+                    if(move>0){
+                        z.x += (dx/dist)*move;
+                        z.y += (dy/dist)*move;
+                    }
+                }
+                // столкновение с игроком
+                if(Math.hypot(player.x - z.x, player.y - z.y) < player.radius + z.radius){
+                    if(player.invincibleTimer <= 0 && !gameOver){
+                        player.hp -= z.damage;
+                        player.invincibleTimer = 22;
+                        if(player.hp <= 0){
+                            player.hp = 0;
+                            gameOver = true;
+                            waveActive = false;
+                        }
+                        updateUI();
+                    }
+                    // отталкивание зомби при контакте
+                    let angle = Math.atan2(player.y - z.y, player.x - z.x);
+                    let push = 8;
+                    z.x -= Math.cos(angle)*push;
+                    z.y -= Math.sin(angle)*push;
+                }
+            }
+            // удаление мёртвых зомби и дроп монет
+            for(let i=0;i<zombies.length;i++){
+                if(zombies[i].hp <= 0){
+                    let dropVal = 6 + Math.floor(Math.random() * 9);
+                    if(zombies[i].variant === "tank") dropVal += 9;
+                    if(zombies[i].variant === "toxic") dropVal += 4;
+                    coinDrops.push({x: zombies[i].x, y: zombies[i].y, value: dropVal, life: 1.0});
+                    zombies.splice(i,1);
+                    enemiesLeft--;
+                    i--;
+                }
+            }
+        }
+        
+        // Сбор монет
+        function updateCoins(){
+            for(let i=0; i<coinDrops.length; i++){
+                let c = coinDrops[i];
+                c.life -= 0.018;
+                if(c.life <= 0){
+                    coins += c.value;
+                    coinDrops.splice(i,1);
+                    updateUI();
+                    i--;
+                }
+            }
+        }
+        
+        // ----- СТРЕЛЬБА (клик мыши) -----
+        function shootAt(mx, my){
+            if(gameOver) return false;
+            let curDamage = getDamage();
+            for(let i=0; i<zombies.length; i++){
+                let z = zombies[i];
+                let dxZ = mx - z.x;
+                let dyZ = my - z.y;
+                if(Math.hypot(dxZ, dyZ) < z.radius+8){
+                    z.hp -= curDamage;
                     if(z.hp <= 0){
-                        // смерть зомби
-                        spawnCoinFromZombie(z.x, z.y);
+                        // при смерти сразу дроп
+                        let val = 5 + Math.floor(Math.random()*8);
+                        if(z.variant === "tank") val+=10;
+                        coinDrops.push({x: z.x, y: z.y, value: val, life: 1.0});
                         zombies.splice(i,1);
                         enemiesLeft--;
                     }
-                    break; // один выстрел убивает/ранит одного зомби
+                    addHitEffect(mx, my);
+                    return true;
                 }
-            }
-            if(hit){
-                // визуальный фидбек
-                drawHitEffect(x,y);
-                return true;
             }
             return false;
         }
         
-        // эффект попадания (вспышка)
         let hitEffects = [];
-        function drawHitEffect(x,y){
-            hitEffects.push({x:x, y:y, timer:6});
+        function addHitEffect(x,y){
+            hitEffects.push({x:x, y:y, life:7});
         }
         
-        // ---------- ВОЛНЫ ----------
-        function startWave(){
-            if(gameOver) return;
-            waveInProgress = true;
-            let baseSpawn = 4 + Math.floor(wave * 1.3);
-            if(wave > 8) baseSpawn = 8 + Math.floor(wave * 0.9);
-            zombiesToSpawn = Math.min(28, baseSpawn);
-            enemiesLeft = zombiesToSpawn;
-            spawnTimer = 12; // кадров между спавнами
-        }
-        
-        function spawnZombie(){
-            if(zombiesToSpawn <= 0) return;
-            // статы зомби растут с волной
-            let health = 25 + Math.floor(wave * 5.5);
-            if(wave > 6) health += 8;
-            if(wave > 12) health += 15;
-            let speed = 0.9 + wave * 0.07;
-            speed = Math.min(3.8, speed);
-            let damage = 8 + Math.floor(wave/3);
-            let reward = 5;
-            zombies.push({
-                x: 20 + Math.random() * 110,
-                y: 60 + Math.random() * (CH-150),
-                hp: health,
-                maxHp: health,
-                speed: speed,
-                damage: damage,
-                width: 32,
-                height: 42
-            });
-            zombiesToSpawn--;
-        }
-        
-        // обновление зомби: движение к базе
-        function updateZombies(){
-            for(let i=0; i<zombies.length; i++){
-                const z = zombies[i];
-                // направление к базе (центр базы)
-                const targetX = base.x + base.w/2 - 15;
-                const targetY = base.y + base.h/2 - 15;
-                const dx = targetX - z.x;
-                const dy = targetY - z.y;
-                const len = Math.hypot(dx,dy);
-                if(len > 0.5){
-                    const move = Math.min(z.speed, len);
-                    z.x += (dx/len) * move;
-                    z.y += (dy/len) * move;
-                }
-                // проверка столкновения с базой
-                if(z.x + 20 > base.x && z.x - 15 < base.x+base.w && z.y+20 > base.y && z.y-10 < base.y+base.h){
-                    // атака базы
-                    base.hp -= z.damage;
-                    if(base.hp <= 0){
-                        base.hp = 0;
-                        gameOver = true;
-                        waveInProgress = false;
-                    }
-                    zombies.splice(i,1);
-                    enemiesLeft--;
-                    i--;
-                    updateBaseUI();
-                }
+        // движение игрока (WASD, стрелки)
+        const keys = { ArrowUp:false, ArrowDown:false, ArrowLeft:false, ArrowRight:false, w:false, s:false, a:false, d:false };
+        function handleInput(){
+            let moveX = 0, moveY = 0;
+            if(keys.ArrowUp || keys.w) moveY -=1;
+            if(keys.ArrowDown || keys.s) moveY +=1;
+            if(keys.ArrowLeft || keys.a) moveX -=1;
+            if(keys.ArrowRight || keys.d) moveX +=1;
+            if(moveX !==0 || moveY !==0){
+                let len = Math.hypot(moveX,moveY);
+                moveX/=len; moveY/=len;
             }
+            let spd = getPlayerSpeed();
+            let newX = player.x + moveX*spd;
+            let newY = player.y + moveY*spd;
+            player.x = Math.min(Math.max(newX, 25 + player.radius), CW - player.radius - 12);
+            player.y = Math.min(Math.max(newY, 35 + player.radius), CH - player.radius - 15);
+            if(player.invincibleTimer > 0) player.invincibleTimer--;
         }
         
-        // обновление монеток (анимация)
-        function updateCoins(){
-            for(let i=0;i<coinItems.length;i++){
-                coinItems[i].life -= 0.02;
-                if(coinItems[i].life <= 0){
-                    // добавить монеты в кошелек
-                    coins += coinItems[i].value;
-                    coinItems.splice(i,1);
-                    i--;
-                    updateCoinUI();
-                }
-            }
-        }
-        
-        // логика волн и спавна
-        function updateWaveSystem(){
-            if(gameOver) return;
-            if(!waveInProgress && zombies.length===0 && enemiesLeft===0 && zombiesToSpawn===0){
-                // конец волны -> следующая
-                wave++;
-                updateWaveUI();
-                startWave();
-            }
-            if(waveInProgress && spawnTimer <=0 && zombiesToSpawn>0){
-                spawnZombie();
-                spawnTimer = Math.max(18, 35 - Math.floor(wave/2));
-            } else if(spawnTimer>0){
-                spawnTimer--;
-            }
-        }
-        
-        // ---------- ОТРИСОВКА ВСЕГО ----------
+        // ----- ОТРИСОВКА -----
         function draw(){
             ctx.clearRect(0,0,CW,CH);
-            // земля/трава
-            ctx.fillStyle = "#355a2b";
+            ctx.fillStyle = "#2e552a";
             ctx.fillRect(0,0,CW,CH);
-            for(let i=0;i<120;i++){
-                ctx.fillStyle = "#4a7840";
+            for(let i=0;i<180;i++){
+                ctx.fillStyle = "#477a3a";
                 ctx.beginPath();
-                ctx.arc( (i*131)%CW, (i*73)%CH, 3,0,Math.PI*2);
+                ctx.arc( (i*173)%CW, (i*97)%CH, 3,0,Math.PI*2);
                 ctx.fill();
             }
-            // дорожка к базе (эффект)
-            ctx.globalAlpha=0.3;
-            ctx.fillStyle = "#5f4c2b";
-            for(let i=0;i<3;i++) ctx.fillRect(base.x-85+i*8, base.y+20, 90, 25);
-            ctx.globalAlpha=1;
-            
-            // ---- РИСУЕМ БАЗУ ----
+            // рисование монет
+            for(let c of coinDrops){
+                ctx.fillStyle = "#fdcc4a";
+                ctx.shadowBlur = 5;
+                ctx.font = "24px monospace";
+                ctx.fillText("💰", c.x-8, c.y-8);
+                ctx.fillStyle = "#f5b02e";
+                ctx.font = "bold 15px monospace";
+                ctx.fillText(`+${c.value}`, c.x+6, c.y-12);
+            }
             ctx.shadowBlur=0;
-            ctx.fillStyle="#7d5d42";
-            ctx.fillRect(base.x, base.y, base.w, base.h);
-            ctx.fillStyle="#b87c4f";
-            ctx.fillRect(base.x+10, base.y-18, 50, 22);
-            ctx.fillStyle="#e3b87c";
-            ctx.beginPath();
-            ctx.rect(base.x+25, base.y-6, 20, 12);
-            ctx.fill();
-            ctx.fillStyle = "#ff6a4b";
-            ctx.font="bold 22px monospace";
-            ctx.fillText("🏠", base.x+22, base.y+48);
-            // полоска здоровья базы
-            let hpPercent = base.hp/base.maxHp;
-            ctx.fillStyle = "#511010";
-            ctx.fillRect(base.x-5, base.y-30, 80, 12);
-            ctx.fillStyle = "#d44a2a";
-            ctx.fillRect(base.x-5, base.y-30, 80*hpPercent, 12);
-            ctx.fillStyle="white";
-            ctx.font="bold 14px monospace";
-            ctx.fillText(`${Math.max(0,base.hp)}/${base.maxHp}`, base.x+12, base.y-20);
             
-            // ---- ЗОМБИ ----
+            // зомби
             for(let z of zombies){
-                let healthPercent = z.hp/z.maxHp;
-                ctx.fillStyle="#2f6b2f";
+                ctx.fillStyle = z.color;
                 ctx.beginPath();
-                ctx.ellipse(z.x+12, z.y+15, 18, 25, 0, 0, Math.PI*2);
+                ctx.arc(z.x, z.y, z.radius, 0, Math.PI*2);
                 ctx.fill();
-                ctx.fillStyle="#39613a";
-                ctx.beginPath();
-                ctx.ellipse(z.x+10, z.y+5, 12, 15, 0, 0, Math.PI*2);
-                ctx.fill();
-                ctx.fillStyle="#2a2418";
-                ctx.fillRect(z.x+3, z.y-2, 10, 6);
-                ctx.fillRect(z.x+15, z.y-2, 10, 6);
-                ctx.fillStyle="#7c3c1c";
-                ctx.beginPath();
-                ctx.ellipse(z.x+10, z.y+20, 10, 7, 0, 0, Math.PI*2);
-                ctx.fill();
-                ctx.fillStyle="#9a2f1f";
-                ctx.beginPath();
-                ctx.ellipse(z.x+6, z.y+12, 3, 4, 0, 0, Math.PI*2);
-                ctx.ellipse(z.x+18, z.y+12, 3, 4, 0, 0, Math.PI*2);
-                ctx.fill();
-                ctx.fillStyle="#27211a";
-                ctx.fillRect(z.x+8, z.y+29, 12, 5);
-                ctx.fillStyle="#a5563a";
-                ctx.font = "bold 16px monospace";
-                ctx.fillText("🧟", z.x+2, z.y+10);
-                // полоска хп зомби
-                ctx.fillStyle="#2f1e0a";
-                ctx.fillRect(z.x-5, z.y-12, 44, 8);
-                ctx.fillStyle="#cb3f1f";
-                ctx.fillRect(z.x-5, z.y-12, 44*healthPercent, 8);
-                ctx.fillStyle="#ffbf80";
-                ctx.font = "10px monospace";
-                ctx.fillText(`${z.hp}❤️`, z.x+5, z.y-3);
-            }
-            
-            // ---- МОНЕТКИ НА ЗЕМЛЕ ----
-            for(let c of coinItems){
-                ctx.fillStyle = "#f5bc42";
-                ctx.shadowBlur=6;
-                ctx.font = `${18+Math.sin(Date.now()*0.01)*2}px monospace`;
-                ctx.fillText("💰", c.x, c.y);
-                ctx.fillStyle = "#efb034";
+                ctx.fillStyle = "#251d12";
+                ctx.font = `${Math.floor(z.radius)}px monospace`;
+                ctx.fillText(z.variant === "tank"? "🧟‍♂️💪" : (z.variant==="fast"?"🧟⚡":"🧟"), z.x-15, z.y-9);
+                ctx.fillStyle = "#922020";
+                ctx.fillRect(z.x-z.radius, z.y-z.radius-8, z.radius*2, 7);
+                ctx.fillStyle = "#cbe65c";
+                let hpPercent = z.hp/z.maxHp;
+                ctx.fillRect(z.x-z.radius, z.y-z.radius-8, z.radius*2*hpPercent, 7);
+                ctx.fillStyle = "#fef7c0";
                 ctx.font = "12px monospace";
-                ctx.fillText(`+${c.value}`, c.x+15, c.y-2);
+                ctx.fillText(`${Math.floor(z.hp)}❤️`, z.x-10, z.y-13);
             }
-            ctx.shadowBlur=0;
             
-            // эффекты попадания
+            // игрок
+            ctx.fillStyle = "#6c9e4d";
+            ctx.beginPath();
+            ctx.arc(player.x, player.y, player.radius, 0, Math.PI*2);
+            ctx.fill();
+            ctx.fillStyle = "#cab87a";
+            ctx.beginPath();
+            ctx.arc(player.x-4, player.y-3, 4, 0, Math.PI*2);
+            ctx.arc(player.x+4, player.y-3, 4, 0, Math.PI*2);
+            ctx.fill();
+            ctx.fillStyle = "#212121";
+            ctx.fillRect(player.x-5, player.y+5, 10, 6);
+            ctx.fillStyle = "#c9ffb0";
+            ctx.font = "20px monospace";
+            ctx.fillText("😎", player.x-12, player.y-12);
+            if(player.invincibleTimer>0){
+                ctx.globalAlpha=0.5;
+                ctx.beginPath();
+                ctx.arc(player.x, player.y, player.radius+4, 0, Math.PI*2);
+                ctx.fillStyle = "#fffbb0";
+                ctx.fill();
+                ctx.globalAlpha=1;
+            }
+            
+            // эффекты выстрелов
             for(let i=0;i<hitEffects.length;i++){
                 let h = hitEffects[i];
-                ctx.fillStyle = `rgba(255,200,80,${h.timer/6})`;
+                ctx.fillStyle = `rgba(255,180,70,${h.life/7})`;
                 ctx.beginPath();
-                ctx.arc(h.x, h.y, 14,0,Math.PI*2);
+                ctx.arc(h.x, h.y, 12,0,Math.PI*2);
                 ctx.fill();
-                h.timer--;
-                if(h.timer<=0) hitEffects.splice(i,1);
+                h.life--;
+                if(h.life<=0) hitEffects.splice(i,1);
             }
-            
-            // оружие / курсор
-            ctx.fillStyle = "#ecdc9a";
-            ctx.font = "bold 28px monospace";
-            ctx.fillText("🔫", 30, 65);
-            ctx.font = "bold 14px monospace";
-            ctx.fillStyle = "#ffecb3";
-            ctx.fillText(`урон ${getDamage()} | скоростр.`, 20, 105);
             
             if(gameOver){
-                ctx.globalAlpha=0.8;
-                ctx.fillStyle = "#1d1410";
+                ctx.globalAlpha=0.85;
+                ctx.fillStyle = "#11160e";
                 ctx.fillRect(0,0,CW,CH);
                 ctx.globalAlpha=1;
-                ctx.font = "bold 38monospace";
-                ctx.fillStyle = "#dd5522";
-                ctx.fillText("⚰️ ВЫ ПРОИГРАЛИ ⚰️", CW/2-200, CH/2);
-                ctx.font = "24px monospace";
-                ctx.fillStyle = "#ffbe76";
-                ctx.fillText("Обновите страницу, чтобы начать заново", CW/2-230, CH/2+70);
+                ctx.font="bold 38px monospace";
+                ctx.fillStyle="#e0813b";
+                ctx.fillText("💀 ВЫ ПОГИБЛИ 💀", CW/2-190, CH/2-50);
+                ctx.font="20px monospace";
+                ctx.fillStyle="#ddbb77";
+                ctx.fillText("Обновите страницу, чтобы выжить снова!", CW/2-200, CH/2+40);
                 return;
             }
-            
-            // надпись волны и остатки
-            ctx.font = "bold 18px monospace";
-            ctx.fillStyle = "#eef7cf";
-            ctx.fillText(`Волна ${wave}  |  Осталось зомби: ${enemiesLeft}   спавн: ${zombiesToSpawn}`, 20, CH-24);
+            ctx.font = "bold 16px monospace";
+            ctx.fillStyle = "#fff4cf";
+            ctx.fillText(`📊 Волна ${wave} | Осталось: ${enemiesLeft}`, 25, 45);
+            ctx.fillStyle = "#ffffffaa";
+            ctx.fillText(`🔫 урон:${getDamage()} | 🏃 скорость:${getPlayerSpeed().toFixed(1)}`, 25, 85);
         }
         
-        // ---------- ОБНОВЛЕНИЕ UI ----------
-        function updateCoinUI(){
-            document.getElementById('coins').innerText = coins;
-        }
-        function updateBaseUI(){
-            document.getElementById('baseHp').innerText = Math.max(0,base.hp);
-        }
-        function updateWaveUI(){
-            document.getElementById('waveNum').innerText = wave;
-            document.getElementById('damageLvl').innerText = damageLevel;
-            document.getElementById('fireRateLvl').innerText = fireRateLevel;
-        }
-        function upgradeDamage(){
-            if(gameOver) return;
-            let cost = getDamageUpgradeCost();
-            if(coins >= cost){
-                coins -= cost;
-                damageLevel++;
-                updateCoinUI();
-                document.getElementById('damageLvl').innerText = damageLevel;
-                updateWaveUI();
-            } else {
-                let msg = document.createElement("div");
-                msg.innerText = "❗ Не хватает монет ❗";
-                msg.style.position="fixed"; msg.style.bottom="10px"; msg.style.left="30%";
-                msg.style.background="black"; msg.style.color="gold"; msg.style.padding="5px"; msg.style.borderRadius="20px";
-                document.body.appendChild(msg);
-                setTimeout(()=>msg.remove(),800);
-            }
-        }
-        function upgradeFireRate(){
-            if(gameOver) return;
-            let cost = getFireRateUpgradeCost();
-            if(coins >= cost){
-                coins -= cost;
-                fireRateLevel++;
-                updateCoinUI();
-                document.getElementById('fireRateLvl').innerText = fireRateLevel;
-                updateWaveUI();
-            } else {
-                let msg = document.createElement("div");
-                msg.innerText = "❗ Не хватает монет ❗";
-                msg.style.position="fixed"; msg.style.bottom="10px"; msg.style.left="30%";
-                msg.style.background="black"; msg.style.color="gold"; msg.style.padding="5px"; msg.style.borderRadius="20px";
-                document.body.appendChild(msg);
-                setTimeout(()=>msg.remove(),800);
-            }
-        }
-        
-        // ---------- ОБРАБОТЧИК ВЫСТРЕЛА (КЛИК ПО КАНВАСУ) ----------
-        let lastShotTime = 0;
-        function handleCanvasClick(e){
+        // ---------- ОБРАБОТЧИК КЛИКА (выстрел с задержкой)----------
+        function onCanvasClick(e){
             if(gameOver) return;
             const rect = canvas.getBoundingClientRect();
             const scaleX = canvas.width / rect.width;
@@ -534,50 +518,72 @@
             let mouseX = (e.clientX - rect.left) * scaleX;
             let mouseY = (e.clientY - rect.top) * scaleY;
             let now = Date.now();
-            let delay = getShootDelayMs();
+            let delay = getShootDelay();
             if(now - lastShotTime >= delay){
                 lastShotTime = now;
                 shootAt(mouseX, mouseY);
-            } else {
-                // "дребезг" - слишком быстрый клик, но даём слабый визуал
-                ctx.fillStyle = "#ffaa55";
-                ctx.beginPath();
-                ctx.arc(mouseX, mouseY, 10, 0, Math.PI*2);
-                ctx.fill();
-                setTimeout(()=>{},5);
             }
         }
         
-        // ---------- ОСНОВНОЙ ЦИКЛ UPDATE ----------
-        function gameUpdate(){
-            if(gameOver){
+        // ----- ПРОКАЧКИ -----
+        function upgradeDamage(){
+            if(gameOver) return;
+            let cost = dmgCost();
+            if(coins>=cost){
+                coins-=cost; dmgLevel++;
+                updateUI();
+            }
+        }
+        function upgradeSpeed(){
+            if(gameOver) return;
+            let cost = speedCost();
+            if(coins>=cost){
+                coins-=cost; speedLevel++;
+                updateUI();
+            }
+        }
+        function upgradeFire(){
+            if(gameOver) return;
+            let cost = fireCost();
+            if(coins>=cost){
+                coins-=cost; fireRateLevel++;
+                updateUI();
+            }
+        }
+        
+        // ----- СОБЫТИЯ КЛАВИАТУРЫ -----
+        window.addEventListener('keydown', (e)=>{
+            let key = e.key;
+            if(keys.hasOwnProperty(key)) keys[key]=true;
+            if(key === 'ArrowUp'||key==='ArrowDown'||key==='ArrowLeft'||key==='ArrowRight'||key==='w'||key==='s'||key==='a'||key==='d')
+                e.preventDefault();
+        });
+        window.addEventListener('keyup', (e)=>{
+            let key = e.key;
+            if(keys.hasOwnProperty(key)) keys[key]=false;
+        });
+        
+        // ---- ЦИКЛ ----
+        function gameLoop(){
+            if(!gameOver){
+                handleInput();
+                updateZombies();
+                updateCoins();
+                updateWaveManagement();
                 draw();
-                requestAnimationFrame(gameUpdate);
-                return;
-            }
-            updateZombies();
-            updateCoins();
-            updateWaveSystem();
-            draw();
-            // обновляем счетчик зомби в UI
-            document.getElementById('zombiesLeft').innerText = zombies.length + zombiesToSpawn;
-            requestAnimationFrame(gameUpdate);
+            } else draw();
+            requestAnimationFrame(gameLoop);
         }
         
-        // ---------- ЗАПУСК И ПОДКЛЮЧЕНИЯ----------
         function init(){
             startWave();
-            updateCoinUI();
-            updateBaseUI();
-            updateWaveUI();
-            base.hp = 100; base.maxHp=100;
-            gameOver = false;
-            canvas.addEventListener('click', handleCanvasClick);
+            updateUI();
+            canvas.addEventListener('click', onCanvasClick);
             document.getElementById('upgradeDmg').addEventListener('click', upgradeDamage);
-            document.getElementById('upgradeSpeed').addEventListener('click', upgradeFireRate);
-            requestAnimationFrame(gameUpdate);
+            document.getElementById('upgradeSpeed').addEventListener('click', upgradeSpeed);
+            document.getElementById('upgradeFire').addEventListener('click', upgradeFire);
+            gameLoop();
         }
-        
         init();
     })();
 </script>
