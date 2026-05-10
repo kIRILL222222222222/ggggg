@@ -3,583 +3,699 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Zombie Apocalypse: Эпическая выживалка с боссами и способностями</title>
+    <title>Ткач Реальности | Игра измерений</title>
     <style>
         * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
             user-select: none;
-            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            margin: 0;
+            background: radial-gradient(circle at center, #0a0a2a 0%, #000000 100%);
             min-height: 100vh;
-            background: radial-gradient(circle at 20% 30%, #1a2a15, #030703);
             display: flex;
             justify-content: center;
             align-items: center;
-            font-family: 'Courier New', 'Monaco', monospace;
-            font-weight: bold;
-            padding: 20px;
+            font-family: 'Segoe UI', 'Orbitron', monospace;
+            overflow: hidden;
+            position: relative;
         }
 
         .game-container {
-            background: #1f2c1ad9;
-            border-radius: 56px;
-            padding: 18px;
-            backdrop-filter: blur(3px);
-            box-shadow: 0 25px 40px rgba(0,0,0,0.7);
+            position: relative;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.3), 0 0 60px rgba(150, 0, 255, 0.2);
+            border-radius: 32px;
+            padding: 8px;
+            background: rgba(10, 10, 30, 0.6);
+            backdrop-filter: blur(2px);
         }
 
         canvas {
             display: block;
             margin: 0 auto;
-            border-radius: 32px;
-            box-shadow: 0 0 0 5px #7a582e, 0 15px 35px black;
+            border-radius: 24px;
             cursor: crosshair;
+            box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.6), 0 10px 25px rgba(0,0,0,0.5);
+            transition: all 0.2s;
         }
 
         .ui-panel {
-            margin-top: 18px;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
             display: flex;
-            flex-wrap: wrap;
             justify-content: space-between;
-            align-items: center;
-            gap: 12px;
-            background: #0b1207dd;
-            backdrop-filter: blur(10px);
-            padding: 10px 18px;
-            border-radius: 60px;
-            border: 1px solid #e6bc7e;
+            pointer-events: none;
+            z-index: 10;
+            font-weight: bold;
+            text-shadow: 0 0 5px cyan;
         }
 
         .stats {
-            display: flex;
-            gap: 20px;
-            background: #020a01;
-            padding: 6px 20px;
-            border-radius: 48px;
-            color: #ffeaac;
-        }
-
-        .stat {
-            display: flex;
-            align-items: baseline;
-            gap: 5px;
-        }
-
-        .stat span:first-child {
-            font-size: 0.8rem;
-            color: #bdf2a0;
-        }
-
-        .stat span:last-child {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #ffcf6e;
-        }
-
-        .skills {
-            display: flex;
-            gap: 12px;
-        }
-
-        button {
-            background: #7e4a23;
-            border: none;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+            padding: 12px 20px;
+            border-radius: 60px;
+            border-left: 3px solid #0ff;
+            border-right: 3px solid #f0f;
             font-family: monospace;
-            font-weight: bold;
-            padding: 6px 12px;
+            letter-spacing: 1px;
+            font-size: 1.3rem;
+            color: #aaffff;
+            pointer-events: none;
+        }
+
+        .texture-badge {
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+            padding: 8px 18px;
             border-radius: 40px;
-            color: #fff2db;
-            cursor: pointer;
-            transition: 0.07s;
-            box-shadow: 0 3px 0 #35200c;
-            font-size: 0.8rem;
+            font-size: 1rem;
+            display: flex;
+            gap: 15px;
+            border: 1px solid rgba(255,0,255,0.5);
         }
 
-        button:active {
-            transform: translateY(2px);
-            box-shadow: 0 1px 0 #35200c;
+        .badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #ffd966;
         }
 
-        .special {
-            background: #935e2e;
-            box-shadow: 0 0 6px #ffb347;
+        .controls-info {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.55);
+            backdrop-filter: blur(4px);
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: #ccc;
+            font-family: monospace;
+            pointer-events: none;
+            z-index: 10;
         }
 
-        .wave-info {
-            background: #10200b;
-            padding: 5px 22px;
-            border-radius: 36px;
-            font-size: 1.1rem;
+        .powerup {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 14px;
+            color: gold;
+            font-weight: bold;
+            pointer-events: none;
+            text-align: right;
+            border-right: 3px solid gold;
         }
-        @media (max-width: 800px) {
-            .stats { gap: 8px; padding: 3px 12px; }
-            .stat span:last-child { font-size: 1rem; }
-            button { padding: 3px 8px; font-size: 0.65rem; }
+
+        @keyframes pulse {
+            0% { text-shadow: 0 0 2px cyan; }
+            100% { text-shadow: 0 0 12px magenta; }
+        }
+
+        .glow {
+            animation: pulse 1s infinite alternate;
         }
     </style>
 </head>
 <body>
-<div>
-    <div class="game-container">
-        <canvas id="gameCanvas" width="1200" height="700"></canvas>
-        <div class="ui-panel">
-            <div class="stats">
-                <div class="stat">❤️ <span id="hpVal">100</span></div>
-                <div class="stat">🪙 <span id="coinVal">0</span></div>
-                <div class="stat">⚔️ <span id="dmgShow">1</span></div>
-                <div class="stat">💨 <span id="spdShow">1</span></div>
-                <div class="stat">🔫 <span id="fireShow">1</span></div>
-                <div class="stat">✨ <span id="critShow">0</span>%</div>
-            </div>
-            <div class="skills">
-                <button id="upgDmg">🗡️ Урон (50💰)</button>
-                <button id="upgSpd">👟 Скорость (45💰)</button>
-                <button id="upgFire">⚡ Скорострельность (55💰)</button>
-                <button id="upgCrit" class="special">⭐ Крит.шанс (80💰)</button>
-                <button id="abilityBtn" class="special">🌀 Атомный взрыв (готов)</button>
-            </div>
-            <div class="wave-info">
-                🌊 <span id="waveNb">1</span> | 🧟 <span id="zCount">0</span> | 🧪 <span id="bossAlert"></span>
-            </div>
-        </div>
+<div class="game-container">
+    <canvas id="gameCanvas" width="1000" height="650"></canvas>
+</div>
+<div class="ui-panel">
+    <div class="stats">
+        🧬 ЭНЕРГИЯ: <span id="energyVal">100</span> | 🌟 ОСКОЛКИ: <span id="fragVal">0</span>
     </div>
-    <div style="text-align: center; margin-top: 13px; color:#dbca9a; font-size: 11px;">
-        🕹️ WASD/стрелки | 🔫 КЛИК по зомби | 🌀 Атомная способность (Q) — раз в 50 сек | 🧟‍♂️ Босс каждые 5 волн! 💎
+    <div class="texture-badge">
+        <div class="badge">🎨 ТЕКСТУРА: <span id="textureName">НЕОН</span></div>
+        <div class="badge">⚡ МОД: <span id="modActive">---</span></div>
     </div>
+</div>
+<div class="controls-info">
+    🖱️ ЛКМ — собирать осколки | 🌀 ПКМ — менять текстуру мира | 🔥 Пробел — супер-волна
+</div>
+<div class="powerup">
+    💠 Особый резонанс: <span id="specialCharge">0</span> / 3
 </div>
 
 <script>
-    (function() {
+    (function(){
+        // ---------- КАНВАС ----------
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
-        const CW = 1200, CH = 700;
-        canvas.width = CW; canvas.height = CH;
+
+        // Размеры
+        let width = 1000;
+        let height = 650;
+        canvas.width = width;
+        canvas.height = height;
+
+        // ---------- ГЛОБАЛЬНЫЕ ПАРАМЕТРЫ ----------
+        let energy = 100;          // здоровье/энергия
+        let fragments = 0;         // осколки реальности (валюта)
+        let specialMeter = 0;      // заряд спецспособности (макс 3)
         
-        // ----- ИГРОК с текстурными деталями -----
-        let player = {
-            x: CW/2, y: CH/2, hp: 100, maxHp: 100,
-            radius: 20, baseSpeed: 3.9, invincible: 0,
-            critChance: 0    // в процентах
-        };
+        // Активные моды / эффекты
+        let activeMod = null;       // "slow" или "double"
+        let modTimer = 0;
         
-        // ----- волны и враги -----
-        let zombies = [];
-        let wave = 1;
-        let waveActive = true;
-        let enemiesToSpawn = 0;
-        let enemiesLeft = 0;
-        let spawnTimer = 0;
-        let gameOver = false;
-        let bossWave = false;
-        let bossEntity = null;  // особый босс
+        // Текстуры: 5 разных визуальных стилей (крутые текстурки)
+        const textures = ["НЕОН", "ГОТИКА", "ЗОЛОТО", "ГЛТЧ", "ХАОС"];
+        let currentTextureIdx = 0;  // 0=неон
         
-        // монеты, эффекты
-        let coins = 100;
-        let coinDrops = [];
+        // Частицы/эффекты
         let particles = [];
         
-        // система прокачки
-        let dmgLvl = 1, speedLvl = 1, fireLvl = 1, critLvl = 0;
+        // Собираемые объекты - осколки (кристаллы)
+        let shards = [];
+        const MAX_SHARDS = 24;
         
-        // способность "Атомный взрыв"
-        let abilityReady = true;
-        let abilityCooldown = 0;   // кадры
-        let lastFrameTime = 0;
+        // Враждебные сущности - "Искажения"
+        let enemies = [];
+        const MAX_ENEMIES = 8;
+        let enemySpawnCooldown = 0;
         
-        // выстрелы
-        let lastShotTime = 0;
+        // Система "Резонансная волна" (спецспособность)
+        let shockwaveActive = false;
+        let shockwaveRadius = 0;
+        let shockwaveMaxRadius = 120;
         
-        // ------ функции расчета ------
-        function getDamage() {
-            let base = 16 + (dmgLvl-1) * 9;
-            return base;
-        }
-        function getPlayerSpeed() { return 3.8 + (speedLvl-1)*0.6; }
-        function getShootDelay() { return Math.max(120, 390 - (fireLvl-1)*45); }
-        function getCritChance() { return Math.min(55, critLvl * 7); }
+        // Таймер для регенерации энергии (медленно)
+        let regenTimer = 0;
         
-        function uiUpdate() {
-            document.getElementById('hpVal').innerHTML = Math.max(0,player.hp);
-            document.getElementById('coinVal').innerHTML = coins;
-            document.getElementById('dmgShow').innerHTML = dmgLvl;
-            document.getElementById('spdShow').innerHTML = speedLvl;
-            document.getElementById('fireShow').innerHTML = fireLvl;
-            document.getElementById('critShow').innerHTML = getCritChance();
-            document.getElementById('waveNb').innerHTML = wave;
-            document.getElementById('zCount').innerHTML = enemiesLeft + (bossEntity ? 1 : 0);
-            if(bossEntity) document.getElementById('bossAlert').innerHTML = "👑 БОСС";
-            else document.getElementById('bossAlert').innerHTML = "";
-        }
-        
-        // стоимость апгрейдов
-        function costDmg() { return 45 + (dmgLvl-1)*15; }
-        function costSpd() { return 40 + (speedLvl-1)*12; }
-        function costFire() { return 50 + (fireLvl-1)*16; }
-        function costCrit() { return 70 + critLvl*18; }
-        
-        // способность: урон всем зомби и боссу
-        function nuclearBlast() {
-            if(!abilityReady || gameOver) return false;
-            let dmg = 85 + wave * 12;
-            for(let i=0;i<zombies.length;i++){
-                zombies[i].hp -= dmg;
-                if(zombies[i].hp <= 0){
-                    let val = 12 + Math.floor(Math.random()*15);
-                    coinDrops.push({x: zombies[i].x, y: zombies[i].y, value: val, life:1.0});
-                    zombies.splice(i,1);
-                    enemiesLeft--;
-                    i--;
-                }
+        // ----- Вспомогательные функции -----
+        function updateUI() {
+            document.getElementById('energyVal').innerText = Math.floor(energy);
+            document.getElementById('fragVal').innerText = fragments;
+            document.getElementById('specialCharge').innerText = specialMeter;
+            document.getElementById('textureName').innerText = textures[currentTextureIdx];
+            if(activeMod && modTimer > 0) {
+                let modName = activeMod === "slow" ? "🐢 ЗАМЕДЛЕНИЕ" : "💥 ДВОЙНЫЕ ОСКОЛКИ";
+                document.getElementById('modActive').innerText = modName;
+                if(activeMod === "slow") document.getElementById('modActive').style.color = "#88aaff";
+                else document.getElementById('modActive').style.color = "#ffaa88";
+            } else {
+                document.getElementById('modActive').innerText = "---";
+                if(activeMod) activeMod = null;
             }
-            if(bossEntity){
-                bossEntity.hp -= dmg;
-                if(bossEntity.hp <= 0){
-                    coinDrops.push({x: bossEntity.x, y: bossEntity.y, value: 80 + wave*5, life:1.0});
-                    bossEntity = null;
-                }
-            }
-            // визуальные частицы
-            for(let i=0;i<40;i++) particles.push({x: player.x, y: player.y, vx: (Math.random()-0.5)*12, vy: (Math.random()-0.5)*12, life: 18});
-            abilityReady = false;
-            abilityCooldown = 1800; // ~ 30 секунд при 60fps (1800 кадров)
-            document.getElementById('abilityBtn').innerHTML = "🌀 Перезарядка...";
-            setTimeout(()=>{ if(!abilityReady) document.getElementById('abilityBtn').innerHTML = "🌀 Атомный взрыв (готов)"; }, 30000);
-            return true;
         }
         
-        // спавн обычных зомби (разные текстуры и механики)
-        function spawnZombie() {
-            if(enemiesToSpawn <=0) return;
-            let side = Math.floor(Math.random()*4);
-            let x = 0, y = 0;
-            if(side===0){ x = 30 + Math.random()*150; y = 20 + Math.random()*CH; }
-            else if(side===1){ x = CW-100 + Math.random()*90; y = 20 + Math.random()*CH; }
-            else if(side===2){ x = 20+Math.random()*CW; y = 30+Math.random()*100; }
-            else { x = 20+Math.random()*CW; y = CH-80+Math.random()*70; }
-            
-            let typeRand = Math.random();
-            let variant = "normal";
-            let special = "";
-            if(wave >= 3 && typeRand<0.2) variant = "fast";
-            if(wave >= 5 && typeRand<0.18) variant = "tank";
-            if(wave >= 7 && typeRand<0.15) variant = "ice";
-            
-            let hp = 34 + Math.floor(wave * 4.5);
-            let spd = 0.95 + wave * 0.09;
-            let dmg = 8 + Math.floor(wave/3);
-            let radius = 22;
-            let color = "#4b6e3b";
-            let icon = "🧟";
-            if(variant === "fast") { hp*=0.65; spd*=2.0; dmg = Math.max(5,dmg-3); color="#b5813a"; radius=18; icon="🧟⚡"; }
-            if(variant === "tank") { hp*=2.1; spd*=0.55; dmg+=6; color="#6e4d2e"; radius=30; icon="🧟💪"; }
-            if(variant === "ice") { hp*=1.2; spd*=0.7; dmg+=2; color="#6085a3"; radius=23; icon="🧟❄️"; special="slow"; }
-            
-            zombies.push({
-                x, y, hp, maxHp: hp, speed: Math.min(4.2,spd), damage: dmg, radius: radius,
-                variant: variant, color: color, icon: icon, special: special
+        // Добавление осколков с модификатором double
+        function addFragments(amount) {
+            let finalAmount = amount;
+            if(activeMod === "double" && modTimer > 0) finalAmount = amount * 2;
+            fragments += finalAmount;
+            // При накоплении осколков заряжаем спецспособность (каждые 5 осколков = 1 заряд)
+            let oldMeter = specialMeter;
+            specialMeter = Math.min(3, specialMeter + Math.floor(finalAmount / 5));
+            if(specialMeter > oldMeter && specialMeter <= 3) {
+                spawnTextEffect("⚡ ЗАРЯД ПОЛУЧЕН!", canvas.width/2, 60, "#ffff88");
+            }
+            updateUI();
+        }
+        
+        // Урон по энергии
+        function damageEnergy(amount) {
+            energy -= amount;
+            if(energy <= 0) {
+                energy = 0;
+                gameOver();
+            }
+            updateUI();
+            // эффект красной вспышки
+            spawnTextEffect("💔", canvas.width/2, canvas.height/2, "#ff5555", 20);
+        }
+        
+        function gameOver() {
+            alert("🌀 Ткань реальности разорвана... Игра окончена. Нажмите ОК, чтобы перезапустить.");
+            resetGame();
+        }
+        
+        function resetGame() {
+            energy = 100;
+            fragments = 0;
+            specialMeter = 0;
+            activeMod = null;
+            modTimer = 0;
+            enemies = [];
+            shards = [];
+            particles = [];
+            shockwaveActive = false;
+            enemySpawnCooldown = 5;
+            regenTimer = 0;
+            currentTextureIdx = 0;
+            // начальная генерация осколков и пары врагов
+            for(let i=0;i<12;i++) spawnShard();
+            for(let i=0;i<2;i++) spawnEnemy();
+            updateUI();
+        }
+        
+        // Появление осколка в случайной позиции
+        function spawnShard() {
+            if(shards.length >= MAX_SHARDS*1.5) return;
+            shards.push({
+                x: 40 + Math.random() * (width - 80),
+                y: 40 + Math.random() * (height - 80),
+                radius: 9,
+                collectable: true,
+                pulse: Math.random() * Math.PI * 2
             });
-            enemiesToSpawn--;
-            enemiesLeft++;
         }
         
-        // спавн босса (каждые 5 волн)
-        function summonBoss() {
-            if(bossEntity) return;
-            let bossHp = 380 + wave * 28;
-            let bossSpd = 1.2 + wave*0.08;
-            let bossDmg = 22 + Math.floor(wave/2);
-            bossEntity = {
-                x: 80 + Math.random() * (CW-200), y: 80 + Math.random()*(CH-160),
-                hp: bossHp, maxHp: bossHp, speed: Math.min(2.8,bossSpd), damage: bossDmg,
-                radius: 42, color: "#aa4f2a", icon: "👑🧟‍♂️", name: "Мясной Гигант"
-            };
-            enemiesLeft++;
+        // Появление врага
+        function spawnEnemy() {
+            if(enemies.length >= MAX_ENEMIES+2) return;
+            let side = Math.floor(Math.random() * 4);
+            let x, y;
+            if(side === 0) { x = Math.random() * width; y = -20; }
+            else if(side === 2) { x = Math.random() * width; y = height+20; }
+            else if(side === 1) { x = width+20; y = Math.random() * height; }
+            else { x = -20; y = Math.random() * height; }
+            enemies.push({
+                x: x, y: y, radius: 16,
+                speed: 0.6 + Math.random() * 0.7,
+                angle: 0,
+                hp: 2,
+                pulse: 0
+            });
         }
         
-        function startWave(){
-            if(gameOver) return;
-            waveActive = true;
-            let baseCount = 6 + Math.floor(wave * 1.2);
-            enemiesToSpawn = Math.min(48, baseCount);
-            enemiesLeft = 0;
-            spawnTimer = 12;
-            bossWave = (wave % 5 === 0 && wave !== 0);
-            if(bossWave) summonBoss();
+        // Эффекты текста
+        function spawnTextEffect(text, x, y, color, size=18) {
+            particles.push({
+                type: "text", text: text, x: x, y: y, life: 1.0,
+                vx: (Math.random()-0.5)*1.2, vy: -1.5 - Math.random()*2, color: color, size: size
+            });
         }
         
-        function updateWaveSystem(){
-            if(gameOver) return;
-            if(waveActive && spawnTimer <=0 && enemiesToSpawn>0){
-                spawnZombie();
-                spawnTimer = Math.max(14, 44 - Math.floor(wave/2.2));
-            } else if(spawnTimer>0) spawnTimer--;
+        // Визуальные частицы (свечения)
+        function addGlowParticle(x, y, color) {
+            particles.push({
+                type: "glow", x: x, y: y, life: 0.8, size: 4+Math.random()*6,
+                vx: (Math.random()-0.5)*1.2, vy: (Math.random()-0.5)*1.2, color: color
+            });
+        }
+        
+        // Обработка спецспособности - волна резонанса
+        function activateShockwave() {
+            if(specialMeter >= 3 && !shockwaveActive) {
+                specialMeter = 0;
+                shockwaveActive = true;
+                shockwaveRadius = 15;
+                // Отталкиваем врагов и наносим урон
+                for(let i=0;i<enemies.length;i++) {
+                    let e = enemies[i];
+                    let dx = e.x - canvas.width/2;
+                    let dy = e.y - canvas.height/2;
+                    let dist = Math.hypot(dx,dy);
+                    if(dist < 180) {
+                        e.hp -= 2;
+                        addGlowParticle(e.x, e.y, "#ff66cc");
+                        if(e.hp <= 0) {
+                            enemies.splice(i,1);
+                            i--;
+                            addFragments(3);
+                            spawnTextEffect("💥", e.x, e.y, "#ffaa44");
+                        }
+                    }
+                }
+                // собираем осколки в радиусе
+                for(let i=0;i<shards.length;i++) {
+                    let s = shards[i];
+                    let dist = Math.hypot(s.x - canvas.width/2, s.y - canvas.height/2);
+                    if(dist < 200) {
+                        addFragments(2);
+                        addGlowParticle(s.x, s.y, "gold");
+                        shards.splice(i,1);
+                        i--;
+                    }
+                }
+                spawnTextEffect("🌀 РЕЗОНАНС!", canvas.width/2, canvas.height/2-30, "#ff44ff", 28);
+                updateUI();
+            } else {
+                spawnTextEffect("Нужно 3 заряда!", canvas.width/2, 100, "#ff8888", 16);
+            }
+        }
+        
+        // Смена текстуры (ПКМ)
+        function nextTexture() {
+            currentTextureIdx = (currentTextureIdx + 1) % textures.length;
+            // При смене текстуры появляется кратковременный мод-бонус (случайный)
+            let r = Math.random();
+            if(r < 0.4) {
+                activeMod = (Math.random() < 0.6) ? "slow" : "double";
+                modTimer = 180;  // ~3 секунды при 60fps
+                spawnTextEffect(activeMod === "slow" ? "🐢 Замедление врагов" : "✨ Двойные осколки!", width/2, 80, "#aaffdd", 20);
+            } else {
+                // исцеление при смене текстуры
+                energy = Math.min(100, energy+10);
+                spawnTextEffect("♻️ Смена реальности +10❤️", width/2, 90, "#88ff88", 18);
+            }
+            updateUI();
+            // визуальный взрыв частиц текстуры
+            for(let i=0;i<30;i++) {
+                addGlowParticle(width/2 + (Math.random()-0.5)*200, height/2 + (Math.random()-0.5)*150, `hsl(${Math.random()*360}, 80%, 60%)`);
+            }
+        }
+        
+        // Обновление логики
+        function updateGame() {
+            if(energy <= 0) return;
             
-            let totalEnemies = enemiesLeft + (bossEntity?1:0);
-            if(waveActive && enemiesToSpawn===0 && zombies.length===0 && !bossEntity){
-                waveActive=false;
-                wave++;
-                let bonus = 55 + wave*3;
-                coins += bonus;
-                uiUpdate();
-                startWave();
+            // регенерация энергии
+            regenTimer++;
+            if(regenTimer > 120 && energy < 100) {
+                energy = Math.min(100, energy+1);
+                regenTimer = 0;
+                updateUI();
+            }
+            
+            // модификаторы
+            if(modTimer > 0) {
+                modTimer--;
+                if(modTimer <= 0) activeMod = null;
+            }
+            
+            // спавн врагов
+            if(enemySpawnCooldown <= 0 && enemies.length < MAX_ENEMIES) {
+                spawnEnemy();
+                enemySpawnCooldown = 40;
+            } else enemySpawnCooldown--;
+            
+            // спавн осколков
+            if(shards.length < MAX_SHARDS && Math.random() < 0.02) spawnShard();
+            
+            // Движение врагов с замедлением если мод slow активен
+            let enemySpeedMul = (activeMod === "slow" && modTimer>0) ? 0.45 : 1.0;
+            for(let i=0;i<enemies.length;i++) {
+                let e = enemies[i];
+                // направить к центру (игроку - курсор мыши? но для простоты - центр)
+                let targetX = width/2, targetY = height/2;
+                let dx = targetX - e.x;
+                let dy = targetY - e.y;
+                let len = Math.hypot(dx,dy);
+                if(len > 0.1) {
+                    let move = e.speed * enemySpeedMul;
+                    e.x += (dx/len) * move;
+                    e.y += (dy/len) * move;
+                }
+                // столкновение с игроком (центр канваса)
+                let distToPlayer = Math.hypot(e.x - width/2, e.y - height/2);
+                if(distToPlayer < e.radius + 18) {
+                    damageEnergy(12);
+                    addGlowParticle(e.x, e.y, "#ff2222");
+                    enemies.splice(i,1);
+                    i--;
+                    continue;
+                }
+                // границы (не вылетают)
+                e.x = Math.min(Math.max(e.x, -30), width+30);
+                e.y = Math.min(Math.max(e.y, -30), height+30);
+                e.pulse = (e.pulse + 0.05) % (Math.PI*2);
+            }
+            
+            // Сбор осколков мышкой (клик)
+            // Но сбор происходит в обработчике событий мыши, здесь просто обновим частоту спавна в ответ
+            
+            // волна 
+            if(shockwaveActive) {
+                shockwaveRadius += 9;
+                if(shockwaveRadius >= shockwaveMaxRadius) shockwaveActive = false;
+                // дополнительные эффекты
+            }
+            
+            // Обновление частиц
+            for(let i=0;i<particles.length;i++) {
+                let p = particles[i];
+                p.life -= 0.025;
+                if(p.type === "text") {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                } else if(p.type === "glow") {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.size *= 0.98;
+                }
+                if(p.life <= 0) particles.splice(i,1), i--;
             }
         }
         
-        // логика врагов + атака на игрока
-        function updateZombiesAndBoss(){
-            let allEnemies = [...zombies];
-            if(bossEntity) allEnemies.push(bossEntity);
-            for(let i=0;i<allEnemies.length;i++){
-                let e = allEnemies[i];
-                let dx = player.x - e.x, dy = player.y - e.y;
-                let dist = Math.hypot(dx,dy);
-                if(dist>0.01){
-                    let move = Math.min(e.speed, dist - (e.radius+player.radius-3));
-                    if(move>0){
-                        e.x += (dx/dist)*move;
-                        e.y += (dy/dist)*move;
+        // ----- ОТРИСОВКА С КРУТЫМИ ТЕКСТУРАМИ И ЭФФЕКТАМИ -----
+        function drawTextureBackground() {
+            // Заливка с градиентом
+            let grad = ctx.createLinearGradient(0, 0, width, height);
+            switch(currentTextureIdx) {
+                case 0: // НЕОН
+                    grad.addColorStop(0, "#0a002a");
+                    grad.addColorStop(0.5, "#10103a");
+                    grad.addColorStop(1, "#02001a");
+                    ctx.fillStyle = grad;
+                    ctx.fillRect(0,0,width,height);
+                    ctx.strokeStyle = "#0ff";
+                    ctx.lineWidth = 2;
+                    for(let i=0;i<60;i++) {
+                        ctx.beginPath();
+                        ctx.moveTo(i*30,0);
+                        ctx.lineTo(i*30+15,height);
+                        ctx.strokeStyle = `rgba(0,255,255,${0.1+Math.sin(Date.now()*0.002+i)*0.05})`;
+                        ctx.stroke();
+                        ctx.beginPath();
+                        ctx.moveTo(0,i*25);
+                        ctx.lineTo(width,i*25+10);
+                        ctx.stroke();
                     }
-                }
-                if(Math.hypot(player.x - e.x, player.y - e.y) < player.radius + e.radius){
-                    if(player.invincible <=0 && !gameOver){
-                        player.hp -= e.damage;
-                        player.invincible = 25;
-                        if(player.hp<=0){ player.hp=0; gameOver=true; waveActive=false; }
-                        uiUpdate();
+                    break;
+                case 1: // ГОТИКА / ТЕМНЫЙ АРК
+                    ctx.fillStyle = "#130b1c";
+                    ctx.fillRect(0,0,width,height);
+                    for(let i=0;i<200;i++) {
+                        ctx.fillStyle = `rgba(70, 40, 80, ${0.1+Math.sin(i+Date.now()*0.001)*0.1})`;
+                        ctx.fillRect(i%width, (i*23)%height, 4,4);
                     }
-                    let angle = Math.atan2(player.y - e.y, player.x - e.x);
-                    e.x -= Math.cos(angle)*10;
-                    e.y -= Math.sin(angle)*10;
-                }
+                    ctx.fillStyle = "#3a1f4d";
+                    for(let s=0;s<30;s++) {
+                        ctx.beginPath();
+                        ctx.arc( (s*97)%width, (s*53)%height, 8, 0, Math.PI*2);
+                        ctx.fill();
+                    }
+                    break;
+                case 2: // ЗОЛОТО / ПЕСОК
+                    ctx.fillStyle = "#2a1f0c";
+                    ctx.fillRect(0,0,width,height);
+                    let goldGrad = ctx.createLinearGradient(0,0,width,height);
+                    goldGrad.addColorStop(0,"#b8860b");
+                    goldGrad.addColorStop(1,"#daa520");
+                    ctx.fillStyle = goldGrad;
+                    ctx.globalAlpha=0.3;
+                    for(let g=0;g<400;g++) {
+                        ctx.fillRect(Math.random()*width, Math.random()*height, 3,3);
+                    }
+                    ctx.globalAlpha=1;
+                    for(let i=0;i<12;i++) {
+                        ctx.beginPath();
+                        ctx.arc(width/2+Math.sin(Date.now()*0.0005+i)*40, height/2+Math.cos(i)*60, 35, 0, Math.PI*2);
+                        ctx.fillStyle = `rgba(255,215,0,0.12)`;
+                        ctx.fill();
+                    }
+                    break;
+                case 3: // ГЛТЧ (Глитч-текстура)
+                    ctx.fillStyle = "#0a0e1a";
+                    ctx.fillRect(0,0,width,height);
+                    for(let i=0;i<80;i++) {
+                        let yOff = Math.sin(Date.now()*0.01+i)*20;
+                        ctx.fillStyle = `rgba(0,255,200,0.2)`;
+                        ctx.fillRect(i*13, yOff+height/3, 8, height/2);
+                        ctx.fillStyle = `rgba(255,0,150,0.2)`;
+                        ctx.fillRect(i*20+100, yOff+100, 5, height-150);
+                    }
+                    break;
+                case 4: // ХАОС (кислотный)
+                    ctx.fillStyle="#080808";
+                    ctx.fillRect(0,0,width,height);
+                    for(let i=0;i<500;i++) {
+                        ctx.fillStyle = `hsl(${(Date.now()*0.5 + i*10)%360}, 80%, 55%)`;
+                        ctx.fillRect(Math.random()*width, Math.random()*height, 2,2);
+                    }
+                    break;
+                default: ctx.fillStyle = "#000"; ctx.fillRect(0,0,width,height);
             }
-            // удаление мертвых зомби
-            for(let i=0;i<zombies.length;i++){
-                if(zombies[i].hp <=0){
-                    let val = 7 + Math.floor(Math.random()*12);
-                    if(zombies[i].variant==="tank") val+=12;
-                    coinDrops.push({x: zombies[i].x, y: zombies[i].y, value: val, life:1.0});
-                    zombies.splice(i,1);
-                    enemiesLeft--;
+            ctx.globalAlpha = 1.0;
+        }
+        
+        function drawShockwave(){
+            if(shockwaveActive){
+                ctx.beginPath();
+                ctx.arc(width/2, height/2, shockwaveRadius, 0, Math.PI*2);
+                ctx.strokeStyle = `rgba(255, 70, 255, ${1 - shockwaveRadius/shockwaveMaxRadius})`;
+                ctx.lineWidth = 6;
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.arc(width/2, height/2, shockwaveRadius-4, 0, Math.PI*2);
+                ctx.strokeStyle = `rgba(100, 200, 255, 0.8)`;
+                ctx.stroke();
+            }
+        }
+        
+        function drawShards() {
+            for(let s of shards) {
+                let glow = 0.5 + Math.sin(Date.now()*0.008 + s.pulse)*0.3;
+                ctx.shadowBlur = 12;
+                ctx.shadowColor = "#0ff";
+                ctx.beginPath();
+                // форма ромба/кристалл
+                for(let ang=0; ang<Math.PI*2; ang+=Math.PI/2){
+                    let x1 = s.x + Math.cos(ang)*s.radius;
+                    let y1 = s.y + Math.sin(ang)*s.radius;
+                    if(ang===0) ctx.moveTo(x1,y1);
+                    else ctx.lineTo(x1,y1);
+                }
+                ctx.closePath();
+                let grad = ctx.createLinearGradient(s.x-5, s.y-5, s.x+5, s.y+5);
+                grad.addColorStop(0, "#ff44cc");
+                grad.addColorStop(1, "#44ffcc");
+                ctx.fillStyle = grad;
+                ctx.fill();
+                ctx.fillStyle = "white";
+                ctx.font = "bold 18px monospace";
+                ctx.shadowBlur = 8;
+                ctx.fillText("✦", s.x-7, s.y+5);
+                ctx.shadowBlur = 0;
+            }
+        }
+        
+        function drawEnemies() {
+            for(let e of enemies) {
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = "#f0f";
+                ctx.beginPath();
+                ctx.arc(e.x, e.y, e.radius*0.7 + Math.sin(e.pulse*4)*2, 0, Math.PI*2);
+                ctx.fillStyle = "#aa44ff";
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(e.x, e.y, e.radius-3, 0, Math.PI*2);
+                ctx.fillStyle = "#ff2277";
+                ctx.fill();
+                ctx.fillStyle = "#ffffff";
+                ctx.font = "bold 18px monospace";
+                ctx.fillText("⚠️", e.x-12, e.y-8);
+                // отображение hp
+                ctx.fillStyle = "#ffaa88";
+                ctx.font = "bold 12px monospace";
+                ctx.fillText(`❤️${e.hp}`, e.x-8, e.y+14);
+                ctx.shadowBlur = 0;
+            }
+        }
+        
+        function drawParticles() {
+            for(let p of particles) {
+                ctx.globalAlpha = p.life;
+                if(p.type === "text"){
+                    ctx.font = `bold ${p.size}px "Orbitron", monospace`;
+                    ctx.fillStyle = p.color;
+                    ctx.shadowBlur = 6;
+                    ctx.fillText(p.text, p.x, p.y);
+                } else if(p.type === "glow"){
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+                    ctx.fillStyle = p.color;
+                    ctx.fill();
+                }
+                ctx.shadowBlur = 0;
+            }
+            ctx.globalAlpha = 1;
+        }
+        
+        function drawPlayerIndicator() {
+            ctx.shadowBlur = 20;
+            ctx.shadowColor = "cyan";
+            ctx.beginPath();
+            ctx.arc(width/2, height/2, 22, 0, Math.PI*2);
+            ctx.fillStyle = "rgba(0,180,200,0.3)";
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(width/2, height/2, 12, 0, Math.PI*2);
+            ctx.fillStyle = "#88ddff";
+            ctx.fill();
+            ctx.fillStyle = "white";
+            ctx.font = "bold 30px monospace";
+            ctx.fillText("🌀", width/2-13, height/2+10);
+            ctx.shadowBlur = 0;
+        }
+        
+        // Обработчики мыши для сбора осколков
+        let mouseX = 0, mouseY = 0;
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            mouseX = (e.clientX - rect.left) * (width/rect.width);
+            mouseY = (e.clientY - rect.top) * (height/rect.height);
+        });
+        
+        function handleCollect(x,y) {
+            for(let i=0;i<shards.length;i++) {
+                let s = shards[i];
+                let dx = s.x - x;
+                let dy = s.y - y;
+                if(Math.hypot(dx,dy) < s.radius+8) {
+                    addFragments(2);
+                    addGlowParticle(s.x, s.y, "#ffcc44");
+                    shards.splice(i,1);
                     i--;
                 }
             }
-            if(bossEntity && bossEntity.hp<=0){
-                coinDrops.push({x: bossEntity.x, y: bossEntity.y, value: 120 + wave*8, life:1.0});
-                bossEntity=null;
-                enemiesLeft--;
-            }
         }
         
-        // монеты и частицы
-        function updateCoins(){
-            for(let i=0;i<coinDrops.length;i++){
-                coinDrops[i].life -= 0.018;
-                if(coinDrops[i].life<=0){
-                    coins += coinDrops[i].value;
-                    coinDrops.splice(i,1);
-                    uiUpdate();
-                    i--;
-                }
+        canvas.addEventListener('click', (e) => {
+            if(energy<=0) return;
+            const rect = canvas.getBoundingClientRect();
+            let clickX = (e.clientX - rect.left) * (width/rect.width);
+            let clickY = (e.clientY - rect.top) * (height/rect.height);
+            handleCollect(clickX, clickY);
+        });
+        
+        canvas.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            if(energy<=0) return;
+            nextTexture();
+        });
+        
+        window.addEventListener('keydown', (e) => {
+            if(e.code === 'Space') {
+                e.preventDefault();
+                activateShockwave();
             }
-            for(let i=0;i<particles.length;i++){
-                particles[i].x += particles[i].vx;
-                particles[i].y += particles[i].vy;
-                particles[i].life--;
-                if(particles[i].life<=0) particles.splice(i,1);
-            }
+        });
+        
+        // Анимация
+        function animate() {
+            updateGame();
+            drawTextureBackground();
+            drawShards();
+            drawEnemies();
+            drawPlayerIndicator();
+            drawShockwave();
+            drawParticles();
+            updateUI();
+            requestAnimationFrame(animate);
         }
         
-        // СТРЕЛЬБА (с критическим уроном)
-        function shootAt(mx,my){
-            if(gameOver) return false;
-            let baseDmg = getDamage();
-            let isCrit = (Math.random()*100) < getCritChance();
-            let finalDmg = isCrit ? baseDmg*2.2 : baseDmg;
-            
-            // проверяем попадание по зомби или боссу
-            for(let i=0;i<zombies.length;i++){
-                let z = zombies[i];
-                if(Math.hypot(mx - z.x, my - z.y) < z.radius+10){
-                    z.hp -= finalDmg;
-                    if(isCrit) addHitEffect(mx,my,"#ffbb66", 20);
-                    else addHitEffect(mx,my,"#ff9f4a",12);
-                    if(z.hp<=0){
-                        let val = 7 + Math.floor(Math.random()*12);
-                        coinDrops.push({x: z.x, y: z.y, value: val, life:1.0});
-                        zombies.splice(i,1);
-                        enemiesLeft--;
-                    }
-                    return true;
-                }
-            }
-            if(bossEntity && Math.hypot(mx - bossEntity.x, my - bossEntity.y) < bossEntity.radius+15){
-                bossEntity.hp -= finalDmg;
-                addHitEffect(mx,my,"#f2843c", 24);
-                if(bossEntity.hp<=0){
-                    coinDrops.push({x: bossEntity.x, y: bossEntity.y, value: 100, life:1.0});
-                    bossEntity=null;
-                    enemiesLeft--;
-                }
-                return true;
-            }
-            return false;
+        // Инициализация
+        function init() {
+            resetGame();
+            animate();
+            // доп спавн начальный
+            for(let i=0;i<6;i++) spawnShard();
         }
         
-        let hitEffects = [];
-        function addHitEffect(x,y,col,size){
-            hitEffects.push({x:x, y:y, life:9, color:col || "#ffaa66", radius: size||14});
-        }
-        
-        const keys = { ArrowUp:false,ArrowDown:false,ArrowLeft:false,ArrowRight:false, w:false,s:false,a:false,d:false };
-        function handleMove(){
-            let mx=0,my=0;
-            if(keys.ArrowUp||keys.w) my-=1;
-            if(keys.ArrowDown||keys.s) my+=1;
-            if(keys.ArrowLeft||keys.a) mx-=1;
-            if(keys.ArrowRight||keys.d) mx+=1;
-            if(mx!==0||my!==0){ let len=Math.hypot(mx,my); mx/=len; my/=len; }
-            let sp = getPlayerSpeed();
-            let nx = player.x + mx*sp;
-            let ny = player.y + my*sp;
-            player.x = Math.min(Math.max(nx, 25+player.radius), CW-player.radius-15);
-            player.y = Math.min(Math.max(ny, 30+player.radius), CH-player.radius-20);
-            if(player.invincible>0) player.invincible--;
-            if(abilityCooldown>0){ abilityCooldown--; if(abilityCooldown<=0 && !abilityReady){ abilityReady=true; document.getElementById('abilityBtn').innerHTML = "🌀 Атомный взрыв (готов)"; } }
-        }
-        
-        // ---------- ОТРИСОВКА С ТЕКСТУРАМИ ----------
-        function draw(){
-            ctx.clearRect(0,0,CW,CH);
-            // текстурированная земля
-            ctx.fillStyle = "#2f5a28";
-            ctx.fillRect(0,0,CW,CH);
-            for(let i=0;i<400;i++){
-                ctx.fillStyle = `rgba(80,100,40,${Math.random()*0.3})`;
-                ctx.fillRect( (i*131)%CW, (i*73)%CH, 4,4);
-            }
-            // монетки
-            for(let c of coinDrops){
-                ctx.fillStyle = "#f7c56e";
-                ctx.shadowBlur=6;
-                ctx.font = "26px monospace";
-                ctx.fillText("🪙", c.x-8, c.y-10);
-                ctx.fillStyle = "#e5b03c";
-                ctx.font = "bold 15px monospace";
-                ctx.fillText(`+${c.value}`, c.x+8, c.y-12);
-            }
-            ctx.shadowBlur=0;
-            
-            // зомби с текстурками
-            for(let z of zombies){
-                ctx.fillStyle = z.color;
-                ctx.beginPath(); ctx.arc(z.x, z.y, z.radius, 0, Math.PI*2); ctx.fill();
-                ctx.fillStyle = "#2c2418";
-                ctx.font = `${Math.floor(z.radius)}px monospace`;
-                ctx.fillText(z.icon, z.x-15, z.y-8);
-                ctx.fillStyle = "#742020";
-                ctx.fillRect(z.x-z.radius, z.y-z.radius-8, z.radius*2, 7);
-                ctx.fillStyle = "#e6e678";
-                ctx.fillRect(z.x-z.radius, z.y-z.radius-8, z.radius*2*(z.hp/z.maxHp), 7);
-                // Эффект льда
-                if(z.special === "slow"){ ctx.strokeStyle = "#aaf0ff"; ctx.beginPath(); ctx.arc(z.x, z.y, z.radius+2, 0, Math.PI*2); ctx.stroke(); }
-            }
-            // босс
-            if(bossEntity){
-                ctx.fillStyle = "#a05632";
-                ctx.shadowBlur=10;
-                ctx.beginPath(); ctx.arc(bossEntity.x, bossEntity.y, bossEntity.radius, 0, Math.PI*2); ctx.fill();
-                ctx.fillStyle = "#ffc285";
-                ctx.font = "38px monospace";
-                ctx.fillText(bossEntity.icon, bossEntity.x-28, bossEntity.y-12);
-                ctx.fillStyle = "#c02222";
-                ctx.fillRect(bossEntity.x-bossEntity.radius, bossEntity.y-bossEntity.radius-12, bossEntity.radius*2, 12);
-                ctx.fillStyle = "#4ade80";
-                ctx.fillRect(bossEntity.x-bossEntity.radius, bossEntity.y-bossEntity.radius-12, bossEntity.radius*2*(bossEntity.hp/bossEntity.maxHp), 12);
-                ctx.fillStyle = "white"; ctx.font="bold 12px monospace";
-                ctx.fillText(`${Math.floor(bossEntity.hp)}❤️`, bossEntity.x-20, bossEntity.y-20);
-            }
-            // игрок с проработкой
-            ctx.shadowBlur=4;
-            ctx.fillStyle = "#9abf6f";
-            ctx.beginPath(); ctx.arc(player.x, player.y, player.radius, 0, Math.PI*2); ctx.fill();
-            ctx.fillStyle = "#f5e1a0";
-            ctx.beginPath(); ctx.arc(player.x-7, player.y-5, 5, 0, Math.PI*2); ctx.fill();
-            ctx.beginPath(); ctx.arc(player.x+7, player.y-5, 5, 0, Math.PI*2); ctx.fill();
-            ctx.fillStyle = "#35281a"; ctx.fillRect(player.x-8, player.y+5, 16, 8);
-            ctx.fillStyle = "#dccf70"; ctx.font = "28px monospace"; ctx.fillText("🔥", player.x-12, player.y-12);
-            if(player.invincible>0){ ctx.globalAlpha=0.4; ctx.beginPath(); ctx.arc(player.x, player.y, player.radius+6, 0, Math.PI*2); ctx.fillStyle="#ffe6a3"; ctx.fill(); ctx.globalAlpha=1; }
-            
-            // эффекты ударов
-            for(let h of hitEffects){
-                ctx.fillStyle = h.color;
-                ctx.beginPath(); ctx.arc(h.x, h.y, h.radius, 0, Math.PI*2); ctx.fill();
-                h.life--; if(h.life<=0) hitEffects.shift();
-            }
-            for(let p of particles){
-                ctx.fillStyle = `rgba(255, 100, 30, ${p.life/20})`;
-                ctx.beginPath(); ctx.arc(p.x, p.y, 5, 0, Math.PI*2); ctx.fill();
-            }
-            if(gameOver){
-                ctx.globalAlpha=0.85; ctx.fillStyle="#211a10"; ctx.fillRect(0,0,CW,CH);
-                ctx.globalAlpha=1; ctx.font="bold 44px monospace"; ctx.fillStyle="#cd6a2e";
-                ctx.fillText("💀 ВЫ НЕ ВЫЖИЛИ 💀", CW/2-220, CH/2);
-                ctx.font="22px monospace"; ctx.fillStyle="#f3c26b";
-                ctx.fillText("Обновите страницу, чтобы начать апокалипсис заново", CW/2-300, CH/2+70);
-                return;
-            }
-            ctx.fillStyle = "#f7e2b0"; ctx.font = "bold 15px monospace";
-            ctx.fillText(`⚡ Способность: ${abilityReady ? "ГОТОВА (Q)" : "..."}`, 30, 70);
-        }
-        
-        // обработчики
-        function canvasClick(e){
-            if(gameOver) return;
-            let rect = canvas.getBoundingClientRect();
-            let mx = (e.clientX - rect.left) * (CW/rect.width);
-            let my = (e.clientY - rect.top) * (CH/rect.height);
-            let now = Date.now();
-            if(now - lastShotTime >= getShootDelay()){
-                lastShotTime = now;
-                shootAt(mx,my);
-            }
-        }
-        
-        function keyPress(e){
-            let k = e.key;
-            if(keys.hasOwnProperty(k)) keys[k]=true;
-            if(k === 'q' || k === 'Q'){ nuclearBlast(); e.preventDefault(); }
-            if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','w','a','s','d'].includes(k)) e.preventDefault();
-        }
-        function keyRelease(e){ let k=e.key; if(keys.hasOwnProperty(k)) keys[k]=false; }
-        
-        window.addEventListener('keydown', keyPress);
-        window.addEventListener('keyup', keyRelease);
-        
-        document.getElementById('upgDmg').onclick = ()=>{
-            if(coins>=costDmg()){ coins-=costDmg(); dmgLvl++; uiUpdate(); }};
-        document.getElementById('upgSpd').onclick = ()=>{
-            if(coins>=costSpd()){ coins-=costSpd(); speedLvl++; uiUpdate(); }};
-        document.getElementById('upgFire').onclick = ()=>{
-            if(coins>=costFire()){ coins-=costFire(); fireLvl++; uiUpdate(); }};
-        document.getElementById('upgCrit').onclick = ()=>{
-            if(coins>=costCrit()){ coins-=costCrit(); critLvl++; uiUpdate(); }};
-        document.getElementById('abilityBtn').onclick = ()=>{ nuclearBlast(); };
-        
-        function gameLoop(){
-            if(!gameOver){
-                handleMove();
-                updateZombiesAndBoss();
-                updateCoins();
-                updateWaveSystem();
-                draw();
-                uiUpdate();
-            } else draw();
-            requestAnimationFrame(gameLoop);
-        }
-        
-        startWave(); uiUpdate(); canvas.addEventListener('click', canvasClick); gameLoop();
+        init();
     })();
 </script>
 </body>
